@@ -327,6 +327,7 @@ h3.hello
 }
 h3.hello span
 {
+    font-family: 'american_captainregular';
     font-size: 30px;
     font-weight: 700;
     color: var(--skin-color);
