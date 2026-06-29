@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
 import {
   House, User, Terminal, Folder, Crosshair, ShieldCheck, Mail, Lock, Unlock,
   Wifi, Cpu, Layers, Send, Play, Check, Shield, CircleAlert, Code, Linkedin, Github,
@@ -8,7 +9,7 @@ import {
 import { CTF_CHALLENGES } from './data';
 import { CtfChallenge, TerminalLine } from './types';
 
-// Import modular tab views
+import StartupScreen from './components/StartupScreen';
 import AboutTab from './components/AboutTab';
 import SkillsTab from './components/SkillsTab';
 import ProjectsTab from './components/ProjectsTab';
@@ -17,6 +18,7 @@ import CertificationsTab from './components/CertificationsTab';
 import ContactTab from './components/ContactTab';
 
 export default function App() {
+  const [booted, setBooted] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'home' | 'about' | 'skills' | 'projects' | 'ctf' | 'certs' | 'contact'>('home');
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
 
@@ -308,7 +310,15 @@ export default function App() {
   };
 
   return (
+    <LayoutGroup>
     <div className="min-h-screen p-4 text-sm antialiased text-term-green selection:bg-term-green selection:text-term-bg overflow-x-hidden font-mono flex flex-col justify-between relative">
+      {/* Startup Loading Screen */}
+      <AnimatePresence>
+        {!booted && (
+          <StartupScreen onComplete={() => setBooted(true)} />
+        )}
+      </AnimatePresence>
+
       {/* Toast Notification */}
       {toast && (
         <div className="fixed top-4 right-4 z-50 bg-term-green text-term-bg px-4 py-2.5 rounded shadow-[0_0_15px_rgba(0,255,65,0.4)] text-xs font-bold flex items-center gap-2 animate-fade-in">
@@ -317,15 +327,19 @@ export default function App() {
         </div>
       )}
       {/* Top Bar Header */}
-      <header className="flex flex-col md:flex-row justify-between items-center mb-4 text-term-lightgray pb-2.5 border-b border-term-border gap-2">
+      <header className={`flex flex-col md:flex-row justify-between items-center mb-4 text-term-lightgray pb-2.5 border-b border-term-border gap-2 transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
         <div className="flex items-center gap-2">
           <span className="text-term-green font-bold">&gt;_</span>
           <span>root@aditya:~#</span>
         </div>
-        <div className="flex items-center gap-2 text-term-green font-bold text-shadow-glow">
+        <motion.div
+          layoutId="secure-status"
+          className="flex items-center gap-2 text-term-green font-bold text-shadow-glow"
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
           <Lock size={14} className="animate-pulse" />
           <span>SECURE CONNECTION ESTABLISHED</span>
-        </div>
+        </motion.div>
         <div className="flex items-center gap-4 text-term-lightgray text-xs">
           <span>&gt;[ 127.0.0.1 ]</span>
           <span>[ PORT: 443 ]</span>
@@ -335,7 +349,7 @@ export default function App() {
       </header>
 
       {/* Main Grid Layout */}
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow">
+      <main className={`grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
         {/* Mobile Navigation Toggle */}
         <div className="lg:hidden">
           <button
@@ -667,7 +681,7 @@ export default function App() {
       </main>
 
       {/* Footer Section */}
-      <footer className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 mt-4 border-t border-term-border pt-4">
+      <footer className={`grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 mt-4 border-t border-term-border pt-4 transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
         {/* Secure Channel trigger */}
         <div className="panel flex flex-col justify-center gap-2">
           <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ SECURE CHANNEL ]</h2>
@@ -737,5 +751,6 @@ export default function App() {
         </div>
       </footer>
     </div>
+    </LayoutGroup>
   );
 }
