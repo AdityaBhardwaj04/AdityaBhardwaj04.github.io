@@ -1,0 +1,6 @@
+{
+  "name": "Cybersecurity Portfolio - Terminal Theme",
+  "description": "An interactive terminal-themed cybersecurity analyst portfolio for Aditya Bhardwaj featuring simulated CTF, dynamic terminal, network monitor, and secure channel transmission.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
