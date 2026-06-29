@@ -28,6 +28,7 @@ body {
   background-color: #040d0f;
   color: #00ff41;
   font-family: "JetBrains Mono", "Courier New", monospace;
+  overflow-anchor: none;
 }
 
 .panel {
@@ -76,4 +77,32 @@ body {
 
 .animate-fade-in {
   animation: fade-in-out 3s ease-in-out forwards;
+}
+
+/* Main grid layout with animated workspace mode */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .main-grid {
+    grid-template-columns: 3fr 6fr 3fr;
+    transition: grid-template-columns 400ms ease-out;
+  }
+
+  .main-grid.workspace {
+    grid-template-columns: 3fr 9fr 0fr;
+  }
+
+  .main-grid.workspace .right-panel {
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+}
+
+.right-panel {
+  transition: opacity 300ms ease-out;
+  opacity: 1;
 }

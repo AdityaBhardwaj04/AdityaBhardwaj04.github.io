@@ -25,6 +25,11 @@ export default function App() {
   const handleTabChange = (tab: typeof activeTab) => {
     setActiveTab(tab);
     setMobileNavOpen(false);
+    if (tab === 'home') {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => window.scrollTo(0, 0));
+      });
+    }
   };
   
   // CTF state shared with global App context
@@ -349,7 +354,7 @@ export default function App() {
       </header>
 
       {/* Main Grid Layout */}
-      <main className={`grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
+      <main className={`main-grid gap-4 flex-grow transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'} ${activeTab !== 'home' && activeTab !== 'about' ? 'workspace' : ''}`}>
         {/* Mobile Navigation Toggle */}
         <div className="lg:hidden">
           <button
@@ -394,7 +399,7 @@ export default function App() {
         </div>
 
         {/* Left Navigation Sidebar (desktop only) */}
-        <aside className="hidden lg:flex lg:col-span-3 flex-col gap-4">
+        <aside className="hidden lg:flex flex-col gap-4 min-w-0">
           <nav aria-label="Main Navigation" className="panel flex flex-col gap-2 shadow-[0_0_10px_rgba(13,43,38,0.1)]">
             <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ NAVIGATION ]</h2>
 
@@ -409,7 +414,7 @@ export default function App() {
             ] as const).map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabChange(item.id)}
                 className={`flex items-center gap-3 px-3 py-2 font-bold rounded text-left transition-all border ${
                   activeTab === item.id
                     ? 'bg-term-green text-term-bg border-term-green shadow-[0_0_10px_rgba(0,255,65,0.3)]'
@@ -463,7 +468,7 @@ export default function App() {
         </aside>
 
         {/* Center Panel Container */}
-        <section className="col-span-1 lg:col-span-6 flex flex-col gap-4">
+        <section className="flex flex-col gap-4 min-w-0">
           {activeTab === 'home' && (
             <div className="panel flex-grow flex flex-col h-full min-h-[450px]">
               {/* Boot Sequence */}
@@ -595,7 +600,7 @@ export default function App() {
         </section>
 
         {/* Right Status / Monitor Sidebar */}
-        <aside className="col-span-1 lg:col-span-3 flex flex-col gap-4">
+        <aside className="right-panel flex flex-col gap-4 min-w-0">
           {/* System Monitor */}
           <div className="panel flex flex-col gap-4">
             <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ SYSTEM MONITOR ]</h2>
