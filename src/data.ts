@@ -366,7 +366,7 @@ export const CERTIFICATIONS: Certification[] = [
     id: 'sc900',
     name: 'Microsoft SC-900: Security, Compliance, and Identity Fundamentals',
     issuer: 'Microsoft',
-    date: '2024',
+    date: '2022',
     idCode: '32b50f1b',
     badgeUrl: 'https://www.credly.com/badges/32b50f1b-4725-47d3-abd9-c1003f8d0a81/linked_in_profile',
     description: 'Foundational certification covering Microsoft security, compliance, and identity concepts across cloud-based and related services. Validates understanding of zero trust principles and the Microsoft security ecosystem.',
