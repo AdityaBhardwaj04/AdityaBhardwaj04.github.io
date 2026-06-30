@@ -573,60 +573,98 @@ export default function App() {
 
         {/* Right Panel */}
         <aside className="right-panel flex flex-col gap-4 min-w-0">
-          {/* Operator Status */}
-          <div className="panel flex flex-col gap-2">
-            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ OPERATOR STATUS ]</h2>
-            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs">
-              <span className="text-term-lightgray">ROLE:</span>
-              <span className="text-term-lightgray leading-tight">Systems Engineer @ TCS</span>
+          {activeTab === 'about' ? (
+            /* Learning Roadmap — shown on About */
+            <div className="panel flex flex-col gap-4">
+              <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ LEARNING ROADMAP ]</h2>
 
-              <span className="text-term-lightgray">FOCUS:</span>
-              <span className="text-term-lightgray">Application Security</span>
+              <div className="flex flex-col gap-3 text-xs">
+                {([
+                  { label: 'eJPT Preparation',   filled: 8 },
+                  { label: 'Cloud Security',      filled: 6 },
+                  { label: 'Secure SDLC',         filled: 7 },
+                  { label: 'Malware Analysis',    filled: 3 },
+                  { label: 'Reverse Engineering', filled: 2 },
+                ] as const).map(({ label, filled }) => (
+                  <div key={label} className="flex flex-col gap-1">
+                    <div className="flex justify-between items-center">
+                      <span className="text-term-lightgray">{label}</span>
+                    </div>
+                    <span className="font-mono text-[13px] leading-none select-none">
+                      <span className="text-term-green">{'█'.repeat(filled)}</span>
+                      <span className="text-term-darkgreen">{'░'.repeat(10 - filled)}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-              <span className="text-term-lightgray">SDLC:</span>
-              <span className="text-term-lightgray">Secure SDLC</span>
-
-              <span className="text-term-lightgray">LEARNING:</span>
-              <span className="text-term-lightgray">eJPT Preparation</span>
-
-              <span className="text-term-lightgray">LATEST:</span>
-              <span className="text-term-lightgray">HTB – Reactor</span>
-
-              <span className="text-term-lightgray">STATUS:</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-term-green font-bold">Open to Opportunities</span>
-                <div className="w-2 h-2 bg-term-green rounded-full animate-pulse shadow-[0_0_5px_#00FF41] flex-shrink-0"></div>
+              <div className="pt-2 border-t border-term-border/60 flex flex-col gap-2">
+                <span className="text-term-lightgray text-[10px] font-mono select-none">{'─'.repeat(24)}</span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-term-lightgray text-[10px] uppercase tracking-wider">Current Milestone</span>
+                  <span className="text-term-green text-xs font-bold">Complete eJPT Certification</span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* Operator Status + Live Session Log — shown on Home and all others */
+            <>
+              {/* Operator Status */}
+              <div className="panel flex flex-col gap-2">
+                <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ OPERATOR STATUS ]</h2>
+                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs">
+                  <span className="text-term-lightgray">ROLE:</span>
+                  <span className="text-term-lightgray leading-tight">Systems Engineer @ TCS</span>
 
-          {/* Live Session Log */}
-          <div className="panel flex-grow flex flex-col gap-0 text-xs overflow-hidden">
-            <h2 className="text-term-lightgray mb-3 text-xs font-bold uppercase tracking-wider">[ LIVE SESSION LOG ]</h2>
-            <div className="flex flex-col gap-0 flex-grow overflow-y-auto max-h-[320px] pr-1">
-              {logEntries.length === 0 ? (
-                <div className="text-term-gray text-[10px] italic">Awaiting session activity...</div>
-              ) : (
-                logEntries.map(entry => (
-                  <div key={entry.id} className="log-entry border-b border-term-border/20 py-2 first:pt-0">
-                    <div className="text-term-gray text-[9px] font-mono mb-0.5">{entry.time}</div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className={`text-[9px] font-bold font-mono flex-shrink-0 ${
-                        entry.level === 'SUCCESS' ? 'text-term-green' :
-                        entry.level === 'NAV'     ? 'text-term-green' :
-                        entry.level === 'VIEW'    ? 'text-term-green' :
-                        entry.level === 'LINK'    ? 'text-yellow-400' :
-                        entry.level === 'DOWNLOAD'? 'text-yellow-400' :
-                        entry.level === 'CONTACT' ? 'text-term-green' :
-                        'text-term-lightgray'
-                      }`}>[{entry.level}]</span>
-                      <span className="text-term-lightgray text-[10px] leading-snug">{entry.message}</span>
-                    </div>
+                  <span className="text-term-lightgray">FOCUS:</span>
+                  <span className="text-term-lightgray">Application Security</span>
+
+                  <span className="text-term-lightgray">SDLC:</span>
+                  <span className="text-term-lightgray">Secure SDLC</span>
+
+                  <span className="text-term-lightgray">LEARNING:</span>
+                  <span className="text-term-lightgray">eJPT Preparation</span>
+
+                  <span className="text-term-lightgray">LATEST:</span>
+                  <span className="text-term-lightgray">HTB – Reactor</span>
+
+                  <span className="text-term-lightgray">STATUS:</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-term-green font-bold">Open to Opportunities</span>
+                    <div className="w-2 h-2 bg-term-green rounded-full animate-pulse shadow-[0_0_5px_#00FF41] flex-shrink-0"></div>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
+                </div>
+              </div>
+
+              {/* Live Session Log */}
+              <div className="panel flex-grow flex flex-col gap-0 text-xs overflow-hidden">
+                <h2 className="text-term-lightgray mb-3 text-xs font-bold uppercase tracking-wider">[ LIVE SESSION LOG ]</h2>
+                <div className="flex flex-col gap-0 flex-grow overflow-y-auto max-h-[320px] pr-1">
+                  {logEntries.length === 0 ? (
+                    <div className="text-term-gray text-[10px] italic">Awaiting session activity...</div>
+                  ) : (
+                    logEntries.map(entry => (
+                      <div key={entry.id} className="log-entry border-b border-term-border/20 py-2 first:pt-0">
+                        <div className="text-term-gray text-[9px] font-mono mb-0.5">{entry.time}</div>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className={`text-[9px] font-bold font-mono flex-shrink-0 ${
+                            entry.level === 'SUCCESS'  ? 'text-term-green'  :
+                            entry.level === 'NAV'      ? 'text-term-green'  :
+                            entry.level === 'VIEW'     ? 'text-term-green'  :
+                            entry.level === 'LINK'     ? 'text-yellow-400'  :
+                            entry.level === 'DOWNLOAD' ? 'text-yellow-400'  :
+                            entry.level === 'CONTACT'  ? 'text-term-green'  :
+                            'text-term-lightgray'
+                          }`}>[{entry.level}]</span>
+                          <span className="text-term-lightgray text-[10px] leading-snug">{entry.message}</span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </aside>
       </main>
 
