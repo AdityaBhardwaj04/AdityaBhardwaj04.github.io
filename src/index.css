@@ -79,6 +79,15 @@ body {
   animation: fade-in-out 3s ease-in-out forwards;
 }
 
+@keyframes log-slide-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.log-entry {
+  animation: log-slide-in 0.2s ease-out forwards;
+}
+
 /* Main grid layout with animated workspace mode */
 .main-grid {
   display: grid;

@@ -22,9 +22,20 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'about' | 'skills' | 'projects' | 'ctf' | 'certs' | 'contact'>('home');
   const [mobileNavOpen, setMobileNavOpen] = useState<boolean>(false);
 
+  const TAB_NAV_LABELS: Record<typeof activeTab, string> = {
+    home: 'Home workspace initialized.',
+    about: 'About profile opened.',
+    skills: 'Skills workspace opened.',
+    projects: 'Projects workspace opened.',
+    ctf: 'CTF & Writeups workspace opened.',
+    certs: 'Certifications workspace opened.',
+    contact: 'Contact terminal initialized.',
+  };
+
   const handleTabChange = (tab: typeof activeTab) => {
     setActiveTab(tab);
     setMobileNavOpen(false);
+    addLogEntry('NAV', TAB_NAV_LABELS[tab]);
     if (tab === 'home') {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => window.scrollTo(0, 0));
@@ -37,20 +48,15 @@ export default function App() {
   const [totalScore, setTotalScore] = useState<number>(0);
   const [flagsCaptured, setFlagsCaptured] = useState<number>(0);
 
-  // Dynamic system monitor load fluctuations
-  const [cpuUsage, setCpuUsage] = useState<number>(42);
-  const [memUsage, setMemUsage] = useState<number>(68);
-  const [netActivity, setNetActivity] = useState<number>(35);
-  const [threatLevel, setThreatLevel] = useState<'LOW' | 'MED' | 'HIGH'>('LOW');
+  // Live session log
+  type LogLevel = 'INFO' | 'NAV' | 'VIEW' | 'LINK' | 'DOWNLOAD' | 'CONTACT' | 'SUCCESS';
+  interface LogEntry { id: number; level: LogLevel; message: string; time: string; }
+  const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
 
-  // Dynamic live activity feed log
-  const [activityLogs, setActivityLogs] = useState<string[]>([
-    'Port scan completed on 10.10.10.10',
-    'Vulnerability found: CVE-2021-44228',
-    'Exploit successful',
-    'Privilege escalation achieved',
-    'Flags captured: 0'
-  ]);
+  const addLogEntry = (level: LogLevel, message: string) => {
+    const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    setLogEntries(prev => [{ id: Date.now(), level, message, time }, ...prev].slice(0, 20));
+  };
 
   // Terminal CLI input state for Home tab
   const [terminalInput, setTerminalInput] = useState<string>('');
@@ -68,33 +74,6 @@ export default function App() {
     setTimeout(() => setToast(''), 3000);
   };
 
-  // Fluctuating metric updates
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCpuUsage(prev => {
-        const delta = Math.floor(Math.random() * 5) - 2; // -2 to +2
-        return Math.max(10, Math.min(95, prev + delta));
-      });
-      setMemUsage(prev => {
-        const delta = Math.floor(Math.random() * 3) - 1; // -1 to +1
-        return Math.max(50, Math.min(90, prev + delta));
-      });
-      setNetActivity(prev => {
-        const delta = Math.floor(Math.random() * 9) - 4; // -4 to +4
-        return Math.max(15, Math.min(99, prev + delta));
-      });
-    }, 4000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Sync flags captured stat inside activity logs
-  useEffect(() => {
-    setActivityLogs(prev => {
-      const filtered = prev.filter(l => !l.startsWith('Flags captured:'));
-      return [...filtered, `Flags captured: ${flagsCaptured} (${totalScore} pts)`];
-    });
-  }, [flagsCaptured, totalScore]);
 
   // Scroll to bottom of terminal whenever line length changes
   useEffect(() => {
@@ -103,17 +82,10 @@ export default function App() {
     }
   }, [terminalLines, activeTab]);
 
-  // Append new log to activity feed
-  const appendActivityLog = (message: string) => {
-    setActivityLogs(prev => {
-      const filtered = prev.filter(l => l !== message);
-      // Limit to max 6 logs
-      if (filtered.length >= 6) {
-        return [...filtered.slice(1), message];
-      }
-      return [...filtered, message];
-    });
-  };
+  // Fire first log entry once booted
+  useEffect(() => {
+    if (booted) addLogEntry('INFO', 'Secure connection established.');
+  }, [booted]);
 
   // Solve callback from CtfTab
   const handleSolveChallenge = (challId: string, points: number, flag: string) => {
@@ -131,7 +103,7 @@ export default function App() {
     if (!alreadySolved) {
       setTotalScore(prev => prev + points);
       setFlagsCaptured(prev => prev + 1);
-      appendActivityLog(`Captured flag for: ${challId}! (+${points} pts)`);
+      addLogEntry('SUCCESS', `Flag captured: ${challId} (+${points} pts)`);
       
       // Also write directly to Home terminal lines if active
       setTerminalLines(prev => [
@@ -178,7 +150,7 @@ export default function App() {
             { text: '> Security enthusiast. CTF player. Lifelong learner.', type: 'output' },
             { text: 'Role: Cybersecurity Analyst | Offensive Specialist', type: 'output' }
           ]);
-          appendActivityLog('Terminal lookup: whoami');
+          addLogEntry('VIEW', 'Operator profile queried.');
           break;
         case 'skills':
           setTerminalLines(prev => [
@@ -190,7 +162,7 @@ export default function App() {
             { text: '  - Privilege Escalation (Linux SUID, windows DLL)', type: 'output' }
           ]);
           setActiveTab('skills');
-          appendActivityLog('Navigated to: SKILLS (CLI)');
+          addLogEntry('NAV', 'Skills workspace opened.');
           break;
         case 'projects':
           setTerminalLines(prev => [
@@ -201,7 +173,7 @@ export default function App() {
             { text: '  3. Facial Recognition Auth System (OpenCV/TF)', type: 'output' }
           ]);
           setActiveTab('projects');
-          appendActivityLog('Navigated to: PROJECTS (CLI)');
+          addLogEntry('NAV', 'Projects workspace opened.');
           break;
         case 'ctf':
           setTerminalLines(prev => [
@@ -212,7 +184,7 @@ export default function App() {
             { text: `  - Rank: ${flagsCaptured === 4 ? 'Root Admin' : flagsCaptured >= 2 ? 'Exploiter' : 'Neophyte'}`, type: 'output' }
           ]);
           setActiveTab('ctf');
-          appendActivityLog('Navigated to: CTF (CLI)');
+          addLogEntry('NAV', 'CTF & Writeups workspace opened.');
           break;
         case 'certs':
           setTerminalLines(prev => [
@@ -223,7 +195,7 @@ export default function App() {
             { text: '  - Security+ (CompTIA Baseline Ops)', type: 'output' }
           ]);
           setActiveTab('certs');
-          appendActivityLog('Navigated to: CERTS (CLI)');
+          addLogEntry('NAV', 'Certifications workspace opened.');
           break;
         case 'contact':
           setTerminalLines(prev => [
@@ -232,7 +204,7 @@ export default function App() {
             { text: 'Type "python3 send_message.py" or open the CONTACT panel.', type: 'output' }
           ]);
           setActiveTab('contact');
-          appendActivityLog('Navigated to: CONTACT (CLI)');
+          addLogEntry('NAV', 'Contact terminal initialized.');
           break;
         case 'resume': {
           setTerminalLines(prev => [
@@ -247,7 +219,7 @@ export default function App() {
           link.click();
           document.body.removeChild(link);
           showToast('Resume download started');
-          appendActivityLog('Resume downloaded via CLI');
+          addLogEntry('DOWNLOAD', 'Resume downloaded.');
           break;
         }
         case 'ping':
@@ -260,7 +232,7 @@ export default function App() {
             { text: `--- ${host} ping statistics ---`, type: 'info' },
             { text: '2 packets transmitted, 2 received, 0% packet loss', type: 'output' }
           ]);
-          appendActivityLog(`Dispatched ping target: ${host}`);
+          addLogEntry('INFO', `Ping dispatched to ${host}.`);
           break;
         case 'nmap':
           setTerminalLines(prev => [
@@ -274,7 +246,7 @@ export default function App() {
             { text: '3000/tcp open  react-vite (Development Portfolio)', type: 'output' },
             { text: 'Nmap done: 1 IP address scanned in 0.88 seconds', type: 'success' }
           ]);
-          appendActivityLog('Nmap audit local scan completed');
+          addLogEntry('INFO', 'Local port scan completed.');
           break;
         case 'clear':
           setTerminalLines([]);
@@ -594,92 +566,65 @@ export default function App() {
 
           {activeTab === 'contact' && (
             <div className="panel flex-grow flex flex-col min-h-[450px]">
-              <ContactTab onMessageSent={appendActivityLog} />
+              <ContactTab onMessageSent={(msg) => addLogEntry('SUCCESS', msg)} />
             </div>
           )}
         </section>
 
-        {/* Right Status / Monitor Sidebar */}
+        {/* Right Panel */}
         <aside className="right-panel flex flex-col gap-4 min-w-0">
-          {/* System Monitor */}
-          <div className="panel flex flex-col gap-4">
-            <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ SYSTEM MONITOR ]</h2>
-            <div className="flex flex-col gap-3 text-xs">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-term-lightgray w-24">CPU Usage</span>
-                <div className="flex-grow flex gap-1 font-mono">
-                  {renderProgressBlocks(cpuUsage)}
-                </div>
-                <span className="text-term-green w-8 text-right font-bold">{cpuUsage}%</span>
-              </div>
+          {/* Operator Status */}
+          <div className="panel flex flex-col gap-2">
+            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ OPERATOR STATUS ]</h2>
+            <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs">
+              <span className="text-term-lightgray">ROLE:</span>
+              <span className="text-term-lightgray leading-tight">Systems Engineer @ TCS</span>
 
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-term-lightgray w-24">Memory Usage</span>
-                <div className="flex-grow flex gap-1 font-mono">
-                  {renderProgressBlocks(memUsage)}
-                </div>
-                <span className="text-term-green w-8 text-right font-bold">{memUsage}%</span>
-              </div>
+              <span className="text-term-lightgray">FOCUS:</span>
+              <span className="text-term-lightgray">Application Security</span>
 
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-term-lightgray w-24">Net Traffic</span>
-                <div className="flex-grow flex gap-1 font-mono">
-                  {renderProgressBlocks(netActivity)}
-                </div>
-                <span className="text-term-green w-8 text-right font-bold">{netActivity}%</span>
-              </div>
+              <span className="text-term-lightgray">SDLC:</span>
+              <span className="text-term-lightgray">Secure SDLC</span>
 
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-term-lightgray w-24">Threat Level</span>
-                <div className="flex-grow flex gap-1 font-mono">
-                  {renderProgressBlocks(threatLevel === 'HIGH' ? 85 : threatLevel === 'MED' ? 50 : 20)}
-                </div>
-                <span className={`w-8 text-right font-bold ${threatLevel === 'HIGH' ? 'text-red-400' : 'text-term-green'}`}>
-                  {threatLevel}
-                </span>
-              </div>
-            </div>
+              <span className="text-term-lightgray">LEARNING:</span>
+              <span className="text-term-lightgray">eJPT Preparation</span>
 
-            {/* Active Processes table */}
-            <div>
-              <h3 className="text-term-lightgray text-xs border-b border-term-border pb-1 font-bold uppercase tracking-wide">ACTIVE PROCESSES</h3>
-              <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-1 text-xs mt-2">
-                <span className="text-term-lightgray">PID</span>
-                <span className="text-term-lightgray">NAME</span>
-                <span className="text-term-lightgray text-right">STATUS</span>
-                
-                <span className="text-term-gray">1337</span>
-                <span className="text-term-lightgray">recon.exe</span>
-                <span className="text-term-green text-right">running</span>
-                
-                <span className="text-term-gray">2345</span>
-                <span className="text-term-lightgray">exploit.py</span>
-                <span className="text-term-green text-right">running</span>
-                
-                <span className="text-term-gray">3456</span>
-                <span className="text-term-lightgray">analyze.log</span>
-                <span className="text-term-green text-right">running</span>
-                
-                <span className="text-term-gray">4567</span>
-                <span className="text-term-lightgray">secure.sh</span>
-                <span className="text-term-green text-right">running</span>
+              <span className="text-term-lightgray">LATEST:</span>
+              <span className="text-term-lightgray">HTB – Reactor</span>
+
+              <span className="text-term-lightgray">STATUS:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-term-green font-bold">Open to Opportunities</span>
+                <div className="w-2 h-2 bg-term-green rounded-full animate-pulse shadow-[0_0_5px_#00FF41] flex-shrink-0"></div>
               </div>
             </div>
           </div>
 
-          {/* Activity Feed */}
-          <div className="panel flex-grow flex flex-col gap-2 text-xs">
-            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ ACTIVITY FEED ]</h2>
-            <div className="flex flex-col gap-2.5 flex-grow">
-              {activityLogs.map((log, index) => (
-                <div key={index} className="flex gap-2 text-term-green text-[11px] leading-tight items-start">
-                  <span className="font-bold select-none">[+]</span>
-                  <span>{log}</span>
-                </div>
-              ))}
-              <div className="mt-auto pt-4 text-term-green/75 border-t border-term-border/30 text-center font-bold">
-                &gt; Keep hacking, keep learning.
-              </div>
+          {/* Live Session Log */}
+          <div className="panel flex-grow flex flex-col gap-0 text-xs overflow-hidden">
+            <h2 className="text-term-lightgray mb-3 text-xs font-bold uppercase tracking-wider">[ LIVE SESSION LOG ]</h2>
+            <div className="flex flex-col gap-0 flex-grow overflow-y-auto max-h-[320px] pr-1">
+              {logEntries.length === 0 ? (
+                <div className="text-term-gray text-[10px] italic">Awaiting session activity...</div>
+              ) : (
+                logEntries.map(entry => (
+                  <div key={entry.id} className="log-entry border-b border-term-border/20 py-2 first:pt-0">
+                    <div className="text-term-gray text-[9px] font-mono mb-0.5">{entry.time}</div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className={`text-[9px] font-bold font-mono flex-shrink-0 ${
+                        entry.level === 'SUCCESS' ? 'text-term-green' :
+                        entry.level === 'NAV'     ? 'text-term-green' :
+                        entry.level === 'VIEW'    ? 'text-term-green' :
+                        entry.level === 'LINK'    ? 'text-yellow-400' :
+                        entry.level === 'DOWNLOAD'? 'text-yellow-400' :
+                        entry.level === 'CONTACT' ? 'text-term-green' :
+                        'text-term-lightgray'
+                      }`}>[{entry.level}]</span>
+                      <span className="text-term-lightgray text-[10px] leading-snug">{entry.message}</span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </aside>
@@ -694,7 +639,7 @@ export default function App() {
           <button 
             onClick={() => {
               setActiveTab('contact');
-              appendActivityLog('Initiated connection handshake.');
+              addLogEntry('CONTACT', 'Contact terminal initialized.');
             }}
             className="mt-1 border border-term-green text-term-green hover:bg-term-green hover:text-term-bg transition-all py-2 px-4 rounded flex items-center justify-between font-bold w-full max-w-xs group cursor-pointer shadow-[0_0_5px_rgba(0,255,65,0.1)]"
           >
@@ -716,7 +661,7 @@ export default function App() {
             <a
               className="flex items-center gap-2 group cursor-pointer"
               href="mailto:abd.aditya10@outlook.com"
-              onClick={() => appendActivityLog('Clicked email hyperlink')}
+              onClick={() => addLogEntry('LINK', 'Opening email client...')}
             >
               <Mail size={20} className="text-term-green group-hover:text-shadow-glow transition-all" />
               <div className="text-xs">
@@ -730,7 +675,7 @@ export default function App() {
               href="https://www.linkedin.com/in/abhardwaj28"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => appendActivityLog('Clicked LinkedIn hyperlink')}
+              onClick={() => addLogEntry('LINK', 'Opening LinkedIn profile...')}
             >
               <Linkedin size={20} className="text-term-green group-hover:text-shadow-glow transition-all" />
               <div className="text-xs">
@@ -744,7 +689,7 @@ export default function App() {
               href="https://github.com/AdityaBhardwaj04"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => appendActivityLog('Clicked GitHub hyperlink')}
+              onClick={() => addLogEntry('LINK', 'Opening GitHub profile...')}
             >
               <Github size={20} className="text-term-green group-hover:text-shadow-glow transition-all" />
               <div className="text-xs">
