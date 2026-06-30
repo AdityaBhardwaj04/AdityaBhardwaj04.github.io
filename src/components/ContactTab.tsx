@@ -92,7 +92,13 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
     const emailPromise = emailjs.send(
       import.meta.env.VITE_EMAILJS_SERVICE_ID,
       import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      { from_name: name, from_email: email, message: msgText },
+      {
+        name: name,
+        email: email,
+        message: msgText,
+        time: new Date().toLocaleString("en-IN"),
+        transmission_id: `BBX-${Date.now()}`
+      },
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
     );
 
