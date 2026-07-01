@@ -17,6 +17,9 @@ import CtfTab from './components/CtfTab';
 import CertificationsTab from './components/CertificationsTab';
 import ContactTab from './components/ContactTab';
 
+const MATRIX_MESSAGE = `Wake up, Aditya.\n\nThe Matrix has you.\n\n...\n\nJust kidding.\n\nCuriosity is the first exploit.\n\n— BLACKBOX`;
+const MATRIX_DRIFT_POOL = ['GET', 'POST', 'SSH', 'JWT', 'CVE', '443', 'sudo', 'chmod', 'grep', 'curl', 'nmap', 'HTTP/1.1', 'root', 'SQL'];
+
 export default function App() {
   const [booted, setBooted] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'home' | 'about' | 'skills' | 'projects' | 'ctf' | 'certs' | 'contact'>('home');
@@ -64,6 +67,39 @@ export default function App() {
     { text: 'Portfolio system terminal v1.0.4 initialized.', type: 'info' },
     { text: 'Type "help" to list available system directives.', type: 'info' }
   ]);
+  const terminalInputRef = useRef<HTMLInputElement>(null);
+
+  // MATRIX.TXT easter egg
+  type MatrixPhase = 'idle' | 'decrypting' | 'revealing' | 'done';
+  const [matrixPhase, setMatrixPhase] = useState<MatrixPhase>('idle');
+  const [matrixTypedLength, setMatrixTypedLength] = useState<number>(0);
+  const matrixTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const handleMatrixClick = () => {
+    if (matrixPhase !== 'idle') return;
+    setMatrixPhase('decrypting');
+    matrixTimersRef.current.push(setTimeout(() => setMatrixPhase('revealing'), 2500));
+  };
+
+  useEffect(() => {
+    if (matrixPhase !== 'revealing') return;
+    setMatrixTypedLength(0);
+    const interval = setInterval(() => {
+      setMatrixTypedLength(prev => {
+        if (prev >= MATRIX_MESSAGE.length) {
+          clearInterval(interval);
+          setMatrixPhase('done');
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 35);
+    return () => clearInterval(interval);
+  }, [matrixPhase]);
+
+  useEffect(() => {
+    return () => matrixTimersRef.current.forEach(clearTimeout);
+  }, []);
   
   const terminalBottomRef = useRef<HTMLDivElement>(null);
 
@@ -124,7 +160,7 @@ export default function App() {
     const args = command.split(' ');
     const baseCommand = args[0].toLowerCase();
 
-    setTerminalLines(prev => [...prev, { text: `root@aditya:~# ${command}`, type: 'input' }]);
+    setTerminalLines(prev => [...prev, { text: `root@blackbox:~$ ${command}`, type: 'input' }]);
 
     setTimeout(() => {
       switch (baseCommand) {
@@ -423,19 +459,56 @@ export default function App() {
             </div>
           </div>
 
-          {/* Simulated Active Matrix rain block */}
-          <div className="panel flex-grow relative overflow-hidden border-term-gray border opacity-40 hover:opacity-60 transition-opacity min-h-[140px]">
+          {/* MATRIX.TXT easter egg */}
+          <div
+            onClick={handleMatrixClick}
+            className={`panel flex-grow relative overflow-hidden border-term-gray border transition-opacity min-h-[140px] ${
+              matrixPhase === 'idle' ? 'opacity-40 hover:opacity-60 cursor-pointer' : 'opacity-100'
+            }`}
+          >
             <h2 className="text-term-lightgray mb-2 absolute top-2 left-2 bg-term-bg px-1 z-10 text-[10px] uppercase font-bold">[ MATRIX.TXT ]</h2>
-            <div aria-hidden="true" className="absolute inset-0 pt-8 px-2 overflow-hidden text-[8px] leading-none text-term-darkgreen break-all opacity-40 font-mono">
-              {Array.from({ length: 15 }).map((_, i) => (
-                <div key={i} className="mb-0.5">
-                  {Math.random().toString(2).substring(2, 45)}
+
+            {matrixPhase === 'idle' && (
+              <>
+                <div aria-hidden="true" className="absolute inset-0 pt-8 px-2 overflow-hidden text-[8px] leading-none text-term-darkgreen break-all opacity-40 font-mono">
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <div key={i} className="mb-0.5">
+                      {Math.random().toString(2).substring(2, 45)}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="absolute bottom-2 left-2 text-[10px] text-term-lightgray">
-              &gt; Stay curious. Stay secure.
-            </div>
+                <div className="absolute bottom-2 left-2 text-[10px] text-term-lightgray">
+                  &gt; Stay curious. Stay secure.
+                </div>
+              </>
+            )}
+
+            {matrixPhase === 'decrypting' && (
+              <div className="absolute inset-0 pt-8 overflow-hidden">
+                {MATRIX_DRIFT_POOL.map((str, i) => (
+                  <span
+                    key={i}
+                    className="matrix-drift absolute text-[9px] font-mono text-term-green/40 select-none"
+                    style={{
+                      left: `${(i * 11 + 5) % 90}%`,
+                      animationDuration: `${2.2 + (i % 4) * 0.2}s`,
+                      animationDelay: `${(i % 5) * 0.15}s`,
+                    }}
+                  >
+                    {str}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {(matrixPhase === 'revealing' || matrixPhase === 'done') && (
+              <div className="absolute inset-0 p-3 flex items-center justify-center">
+                <pre className="text-term-green text-[10px] font-mono leading-relaxed whitespace-pre-wrap text-center">
+                  {MATRIX_MESSAGE.slice(0, matrixTypedLength)}
+                  {matrixPhase === 'revealing' && <span className="inline-block w-[6px] h-[11px] bg-term-green ml-0.5 animate-blink align-middle"></span>}
+                </pre>
+              </div>
+            )}
           </div>
         </aside>
 
@@ -495,20 +568,23 @@ export default function App() {
 
               {/* Interactive Local Terminal input box */}
               <div className="flex-grow flex flex-col justify-end">
-                <div className="border border-term-border rounded bg-term-bg p-3 flex flex-col font-mono text-xs min-h-[160px] max-h-[220px]">
+                <div
+                  className="border border-term-border rounded bg-term-bg p-3 flex flex-col font-mono text-xs min-h-[160px] max-h-[220px] cursor-text"
+                  onClick={() => terminalInputRef.current?.focus()}
+                >
                   <div className="overflow-y-auto flex-grow mb-2 space-y-1 pr-1 border-b border-term-border/30 pb-2">
                     {terminalLines.map((line, idx) => (
-                      <div 
-                        key={idx} 
+                      <div
+                        key={idx}
                         className={
-                          line.type === 'input' 
-                            ? 'text-yellow-400 font-bold' 
-                            : line.type === 'error' 
-                            ? 'text-red-400 font-bold' 
-                            : line.type === 'success' 
-                            ? 'text-term-green font-bold' 
-                            : line.type === 'info' 
-                            ? 'text-term-lightgray/60 italic' 
+                          line.type === 'input'
+                            ? 'text-yellow-400 font-bold'
+                            : line.type === 'error'
+                            ? 'text-red-400 font-bold'
+                            : line.type === 'success'
+                            ? 'text-term-green font-bold'
+                            : line.type === 'info'
+                            ? 'text-term-lightgray/60 italic'
                             : 'text-term-lightgray'
                         }
                       >
@@ -520,14 +596,20 @@ export default function App() {
 
                   {/* Input form */}
                   <form onSubmit={handleTerminalSubmit} className="flex items-center gap-2">
-                    <span className="text-term-green font-bold select-none">root@aditya:~#</span>
-                    <input
-                      type="text"
-                      value={terminalInput}
-                      onChange={(e) => setTerminalInput(e.target.value)}
-                      placeholder="Type a command (e.g. 'help', 'whoami', 'nmap localhost')..."
-                      className="bg-transparent text-term-green flex-grow outline-none caret-term-green font-mono text-xs focus:ring-0 focus:outline-none border-none p-0"
-                    />
+                    <span className="text-term-green font-bold select-none flex-shrink-0">root@blackbox:~$</span>
+                    <div className="relative flex-grow flex items-center min-w-0 font-mono text-xs">
+                      <span className="text-term-green whitespace-pre break-all">{terminalInput}</span>
+                      <span className="inline-block w-[6px] h-[13px] bg-term-green ml-0.5 animate-blink flex-shrink-0"></span>
+                      <input
+                        ref={terminalInputRef}
+                        type="text"
+                        value={terminalInput}
+                        onChange={(e) => setTerminalInput(e.target.value)}
+                        autoComplete="off"
+                        spellCheck={false}
+                        className="absolute inset-0 w-full h-full bg-transparent text-transparent [caret-color:transparent] outline-none border-none p-0 font-mono text-xs"
+                      />
+                    </div>
                   </form>
                 </div>
               </div>
@@ -674,10 +756,10 @@ export default function App() {
         <div className="panel flex flex-col justify-center gap-2">
           <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ SECURE CHANNEL ]</h2>
           <p className="text-term-lightgray text-xs leading-tight">Let's connect and build the future securely.</p>
-          <button 
+          <button
             onClick={() => {
-              setActiveTab('contact');
-              addLogEntry('CONTACT', 'Contact terminal initialized.');
+              handleTabChange('contact');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="mt-1 border border-term-green text-term-green hover:bg-term-green hover:text-term-bg transition-all py-2 px-4 rounded flex items-center justify-between font-bold w-full max-w-xs group cursor-pointer shadow-[0_0_5px_rgba(0,255,65,0.1)]"
           >
@@ -688,11 +770,14 @@ export default function App() {
 
         {/* Contact Info Social Bar */}
         <div className="panel flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-          <div className="text-term-lightgray text-xs flex-grow">
-            <div><span className="text-term-green font-bold">root@aditya:~#</span> connect --secure</div>
-            <div>Establishing secure channel ......... <span className="text-term-green font-bold">Done</span></div>
-            <div>Send a message via the contact terminal.</div>
-            <div><span className="text-term-green font-bold">root@aditya:~#</span> <span className="animate-blink bg-term-green w-1.5 h-3 inline-block align-middle"></span></div>
+          <div className="text-term-lightgray text-xs flex-grow font-mono">
+            <div><span className="text-term-green font-bold">root@blackbox:~#</span> status</div>
+            <div className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">
+              <span>Secure Channel</span><span className="text-term-green font-bold">ACTIVE</span>
+              <span>Encryption</span><span className="text-term-green font-bold">ECC-256</span>
+              <span>Response Time</span><span className="text-term-green font-bold">&lt; 24 hrs</span>
+              <span>Availability</span><span className="text-term-green font-bold">OPEN</span>
+            </div>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-5">
@@ -738,6 +823,22 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Closing Statement */}
+      <div className={`mt-4 pt-4 border-t border-term-border flex flex-col items-center text-center gap-3 transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
+        <p className="text-term-green text-sm font-bold text-shadow-glow italic">
+          Every click leaves a footprint. Every packet tells a story.
+        </p>
+      
+
+        <span className="text-term-border text-xs font-mono select-none">{'─'.repeat(46)}</span>
+
+        <div className="flex flex-col items-center gap-0.5 text-[10px]">
+          <span className="text-term-lightgray font-bold">BLACKBOX v1.0</span>
+          <span className="text-term-lightgray/60">Designed, Developed &amp; Secured by Aditya Bhardwaj</span>
+          <span className="text-term-lightgray/60">© 2026</span>
+        </div>
+      </div>
     </div>
     </LayoutGroup>
   );

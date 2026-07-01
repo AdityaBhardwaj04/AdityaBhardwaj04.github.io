@@ -88,6 +88,20 @@ body {
   animation: log-slide-in 0.2s ease-out forwards;
 }
 
+@keyframes drift-down {
+  0%   { transform: translateY(-12px); opacity: 0; }
+  12%  { opacity: 0.4; }
+  88%  { opacity: 0.4; }
+  100% { transform: translateY(140px); opacity: 0; }
+}
+
+.matrix-drift {
+  animation-name: drift-down;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  top: 0;
+}
+
 /* Main grid layout with animated workspace mode */
 .main-grid {
   display: grid;
