@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-07T19:53:08Z",
+  "generatedAt": "2026-07-07T19:57:58Z",
   "data": {
-    "status": "OFFLINE",
+    "status": "ONLINE",
     "automation": "GitHub Actions",
-    "lastSync": "2026-07-07T19:53:08Z",
-    "runtime": "0.97 seconds",
+    "lastSync": "2026-07-07T19:57:58Z",
+    "runtime": "2.70 seconds",
     "version": "1.0.0",
     "providers": [
       {
         "id": "github",
         "name": "GitHub",
         "category": "development",
-        "status": "OFFLINE",
-        "lastSuccessfulSync": null,
-        "lastAttempt": "2026-07-07T19:53:08Z",
-        "responseTime": null,
-        "error": "Client error '404 Not Found' for url 'https://api.github.com/users//repos?per_page=100&sort=updated'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+        "status": "ONLINE",
+        "lastSuccessfulSync": "2026-07-07T19:57:58Z",
+        "lastAttempt": "2026-07-07T19:57:58Z",
+        "responseTime": "1.77s",
+        "error": null
       },
       {
         "id": "htb",
         "name": "Hack The Box",
         "category": "training",
-        "status": "OFFLINE",
-        "lastSuccessfulSync": null,
-        "lastAttempt": "2026-07-07T19:53:08Z",
-        "responseTime": null,
-        "error": "profile: Client error '404 Not Found' for url 'https://labs.hackthebox.com/api/v4/profile/'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404; activity: Client error '404 Not Found' for url 'https://labs.hackthebox.com/api/v5/user/profile/activity/?page=1'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404; badges: Client error '400 Bad Request' for url 'https://labs.hackthebox.com/api/v4/profile/badges/?rare=8'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400; machine_progress: Client error '404 Not Found' for url 'https://labs.hackthebox.com/api/v4/profile/progress/machines/'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+        "status": "ONLINE",
+        "lastSuccessfulSync": "2026-07-07T19:57:58Z",
+        "lastAttempt": "2026-07-07T19:57:58Z",
+        "responseTime": "0.92s",
+        "error": null
       }
     ]
   }
