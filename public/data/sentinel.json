@@ -4,8 +4,6 @@
   "data": {
     "status": "ONLINE",
     "automation": "GitHub Actions",
-    "lastSync": "2026-07-07T19:57:58Z",
-    "runtime": "2.70 seconds",
     "version": "1.0.0",
     "providers": [
       {
@@ -13,9 +11,6 @@
         "name": "GitHub",
         "category": "development",
         "status": "ONLINE",
-        "lastSuccessfulSync": "2026-07-07T19:57:58Z",
-        "lastAttempt": "2026-07-07T19:57:58Z",
-        "responseTime": "1.77s",
         "error": null
       },
       {
@@ -23,9 +18,6 @@
         "name": "Hack The Box",
         "category": "training",
         "status": "ONLINE",
-        "lastSuccessfulSync": "2026-07-07T19:57:58Z",
-        "lastAttempt": "2026-07-07T19:57:58Z",
-        "responseTime": "0.92s",
         "error": null
       }
     ]

@@ -17,7 +17,13 @@ def _now_iso() -> str:
 
 
 def _wrap(schema_version: int, data: object) -> dict:
-    """Wrap payload in the schema envelope."""
+    """Wrap portfolio data in the schema envelope.
+
+    ``generatedAt`` records when the portfolio last meaningfully changed.
+    It is set only when the writer is actually called — which only happens
+    when the snapshot comparison detected a change — so it never advances
+    on no-op Sentinel runs.
+    """
     return {
         "schemaVersion": schema_version,
         "generatedAt": _now_iso(),
@@ -46,7 +52,8 @@ def _write_atomic(path: Path, payload: dict, schema_version: int) -> None:
 class Writer:
     """Writes the three portfolio JSON files to public/data/.
 
-    Failure isolation: if a provider failed, the corresponding telemetry section
+    Only called when a meaningful portfolio change is detected. Failure
+    isolation: if a provider failed, the corresponding telemetry section
     falls back to the previous run's values so the portfolio never shows zeros.
     """
 

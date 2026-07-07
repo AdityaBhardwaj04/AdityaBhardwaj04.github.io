@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class GitHubTelemetry:
     repositories: int
     latestRepository: str
-    lastCommit: str      # ISO datetime of most recent push
+    lastCommit: str  # ISO datetime of most recent push
 
     def to_dict(self) -> dict:
         return {
@@ -35,11 +35,9 @@ class HTBTelemetry:
 class Telemetry:
     github: GitHubTelemetry
     htb: HTBTelemetry
-    lastUpdated: str
 
     def to_dict(self) -> dict:
         return {
             "github": self.github.to_dict(),
             "htb": self.htb.to_dict(),
-            "lastUpdated": self.lastUpdated,
         }

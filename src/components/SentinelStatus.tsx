@@ -6,17 +6,12 @@ interface Provider {
   name: string;
   category: string;
   status: string;
-  lastSuccessfulSync: string | null;
-  lastAttempt: string;
-  responseTime: string | null;
   error: string | null;
 }
 
 interface SentinelData {
   status: string;
   automation: string;
-  lastSync: string;
-  runtime: string;
   version: string;
   providers: Provider[];
 }
@@ -70,21 +65,6 @@ function logDate(dateStr: string): string {
   return yr === currentYear ? `${dd} ${mon}` : `${dd} ${mon} ${String(yr).slice(-2)}`;
 }
 
-// Full relative timestamp used in the Sentinel Status metadata grid.
-function relativeSync(iso: string): string {
-  const diffMs  = Date.now() - new Date(iso).getTime();
-  const diffMin = Math.floor(diffMs / 60_000);
-  const diffHr  = Math.floor(diffMs / 3_600_000);
-  const diffDay = Math.floor(diffMs / 86_400_000);
-  if (diffMin  < 1)  return 'just now';
-  if (diffMin  < 60) return `${diffMin} min ago`;
-  if (diffHr   < 24) return `${diffHr} hr ago`;
-  if (diffDay === 1) return 'yesterday';
-  if (diffDay  < 30) return `${diffDay} days ago`;
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  });
-}
 
 export default function SentinelStatus() {
   const [sentinel, setSentinel]   = useState<SentinelData | null>(null);
@@ -193,10 +173,6 @@ export default function SentinelStatus() {
             <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[10px] mt-1 pt-1.5 border-t border-term-border/40">
               <span className="text-term-lightgray/60">Automation</span>
               <span className="text-term-lightgray">{sentinel.automation}</span>
-              <span className="text-term-lightgray/60">Runtime</span>
-              <span className="text-term-lightgray">{sentinel.runtime}</span>
-              <span className="text-term-lightgray/60">Last Sync</span>
-              <span className="text-term-lightgray">{relativeSync(sentinel.lastSync)}</span>
               <span className="text-term-lightgray/60">Version</span>
               <span className="text-term-green font-mono">v{sentinel.version}</span>
             </div>

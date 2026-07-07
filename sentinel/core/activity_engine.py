@@ -42,8 +42,14 @@ def generate_events(
         if kind == "htb_solve":
             name = change.get("name", "Unknown")
             obj = change.get("object_type", "machine")
-            label = "Solved HTB" if obj == "machine" else "Completed HTB Challenge"
-            title = f"{label}: {name}"
+            flag = change.get("flag_type", "user")
+
+            if obj == "machine":
+                flag_label = "Root Own" if flag == "root" else "User Own"
+                title = f"{flag_label} — {name}"
+            else:
+                title = f"Completed HTB Challenge: {name}"
+
             event = ActivityEvent(
                 id=make_event_id(change["date"], "htb", title),
                 date=change["date"],
