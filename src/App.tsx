@@ -16,6 +16,7 @@ import ProjectsTab from './components/ProjectsTab';
 import CtfTab from './components/CtfTab';
 import CertificationsTab from './components/CertificationsTab';
 import ContactTab from './components/ContactTab';
+import SentinelStatus from './components/SentinelStatus';
 
 const MATRIX_MESSAGE = `Wake up, Aditya.\n\nThe Matrix has you.\n\n...\n\nJust kidding.\n\nCuriosity is the first exploit.\n\n— BLACKBOX`;
 const MATRIX_DRIFT_POOL = ['GET', 'POST', 'SSH', 'JWT', 'CVE', '443', 'sudo', 'chmod', 'grep', 'curl', 'nmap', 'HTTP/1.1', 'root', 'SQL'];
@@ -656,7 +657,8 @@ export default function App() {
         {/* Right Panel */}
         <aside className="right-panel flex flex-col gap-4 min-w-0">
           {activeTab === 'about' ? (
-            /* Learning Roadmap — shown on About */
+            /* Learning Roadmap + Sentinel — shown on About */
+            <>
             <div className="panel flex flex-col gap-4">
               <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ LEARNING ROADMAP ]</h2>
 
@@ -688,6 +690,9 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            <SentinelStatus />
+            </>
           ) : (
             /* Operator Status + Live Session Log — shown on Home and all others */
             <>

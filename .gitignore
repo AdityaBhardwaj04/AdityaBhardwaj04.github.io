@@ -9,3 +9,16 @@ coverage/
 .claude
 .agents
 docs
+sentinel/data/previous_state.json
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Sentinel runtime state
+sentinel/data/
