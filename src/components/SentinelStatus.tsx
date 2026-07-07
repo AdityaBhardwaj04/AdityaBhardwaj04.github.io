@@ -42,6 +42,16 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
   server: Server,
 };
 
+// Absolute date for portfolio metadata (generatedAt).
+// Always "DD MMM YYYY" — no relative format, no year omission.
+function metaDate(isoStr: string): string {
+  const d = new Date(isoStr);
+  const dd  = d.getUTCDate().toString().padStart(2, '0');
+  const mon = d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+  const yr  = d.getUTCFullYear();
+  return `${dd} ${mon} ${yr}`;
+}
+
 // Human-readable timestamp for the log date column.
 // Recent events get relative format; older events get DD MMM [YY] format.
 function logDate(dateStr: string): string {
@@ -67,9 +77,10 @@ function logDate(dateStr: string): string {
 
 
 export default function SentinelStatus() {
-  const [sentinel, setSentinel]   = useState<SentinelData | null>(null);
-  const [activity, setActivity]   = useState<ActivityEvent[]>([]);
-  const [loading,  setLoading]    = useState(true);
+  const [sentinel,     setSentinel]     = useState<SentinelData | null>(null);
+  const [generatedAt,  setGeneratedAt]  = useState<string | null>(null);
+  const [activity,     setActivity]     = useState<ActivityEvent[]>([]);
+  const [loading,      setLoading]      = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -79,6 +90,7 @@ export default function SentinelStatus() {
       .then(([sentEnv, actEnv]) => {
         if (sentEnv?.data && typeof sentEnv.data === 'object') {
           setSentinel(sentEnv.data as SentinelData);
+          if (sentEnv.generatedAt) setGeneratedAt(sentEnv.generatedAt);
         }
         if (Array.isArray(actEnv?.data)) {
           setActivity(actEnv.data as ActivityEvent[]);
@@ -173,6 +185,8 @@ export default function SentinelStatus() {
             <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-[10px] mt-1 pt-1.5 border-t border-term-border/40">
               <span className="text-term-lightgray/60">Automation</span>
               <span className="text-term-lightgray">{sentinel.automation}</span>
+              <span className="text-term-lightgray/60">Updated</span>
+              <span className="text-term-lightgray">{generatedAt ? metaDate(generatedAt) : '—'}</span>
               <span className="text-term-lightgray/60">Version</span>
               <span className="text-term-green font-mono">v{sentinel.version}</span>
             </div>
