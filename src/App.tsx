@@ -354,10 +354,12 @@ export default function App() {
           <Lock size={14} className="animate-pulse" />
           <span>SECURE CONNECTION ESTABLISHED</span>
         </motion.div>
-        <div className="flex items-center gap-4 text-term-lightgray text-xs">
-          <span>&gt;[ 127.0.0.1 ]</span>
-          <span>[ PORT: 443 ]</span>
-          <span>[ PROTOCOL: HTTPS ]</span>
+        <div className="flex items-center gap-3 text-term-lightgray text-xs">
+          <div className="flex sm:flex-row flex-col sm:gap-3 gap-0.5 sm:items-center items-end">
+            <span>&gt;<span className="sm:inline hidden">[</span> 127.0.0.1 <span className="sm:inline hidden">]</span></span>
+            <span><span className="sm:inline hidden">[ </span>PORT: 443<span className="sm:inline hidden"> ]</span></span>
+            <span><span className="sm:inline hidden">[ </span>PROTOCOL: HTTPS<span className="sm:inline hidden"> ]</span></span>
+          </div>
           <Wifi size={16} className="text-term-green animate-pulse" />
         </div>
       </header>
@@ -372,7 +374,7 @@ export default function App() {
           >
             <div className="flex items-center gap-2 text-term-green font-bold text-xs">
               {mobileNavOpen ? <X size={16} /> : <Menu size={16} />}
-              <span>[ NAVIGATION ]</span>
+              <span><span className="sm:inline hidden">[ </span>NAVIGATION<span className="sm:inline hidden"> ]</span></span>
             </div>
             <span className="text-term-lightgray text-[10px] font-mono uppercase">
               {activeTab}
@@ -410,7 +412,7 @@ export default function App() {
         {/* Left Navigation Sidebar (desktop only) */}
         <aside className="hidden lg:flex flex-col gap-4 min-w-0">
           <nav aria-label="Main Navigation" className="panel flex flex-col gap-2 shadow-[0_0_10px_rgba(13,43,38,0.1)]">
-            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ NAVIGATION ]</h2>
+            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>NAVIGATION<span className="sm:inline hidden"> ]</span></h2>
 
             {([
               { id: 'home', label: '01. HOME', icon: <House size={16} /> },
@@ -438,7 +440,7 @@ export default function App() {
 
           {/* System Status Panel */}
           <div className="panel flex flex-col gap-2">
-            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ SYSTEM STATUS ]</h2>
+            <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>SYSTEM STATUS<span className="sm:inline hidden"> ]</span></h2>
             <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">
               <span className="text-term-lightgray">USER:</span>
               <span className="text-term-green font-bold">aditya</span>
@@ -467,7 +469,7 @@ export default function App() {
               matrixPhase === 'idle' ? 'opacity-40 hover:opacity-60 cursor-pointer' : 'opacity-100'
             }`}
           >
-            <h2 className="text-term-lightgray mb-2 absolute top-2 left-2 bg-term-bg px-1 z-10 text-[10px] uppercase font-bold">[ MATRIX.TXT ]</h2>
+            <h2 className="text-term-lightgray mb-2 absolute top-2 left-2 bg-term-bg px-1 z-10 text-[10px] uppercase font-bold"><span className="sm:inline hidden">[ </span>MATRIX.TXT<span className="sm:inline hidden"> ]</span></h2>
 
             {matrixPhase === 'idle' && (
               <>
@@ -660,7 +662,7 @@ export default function App() {
             /* Learning Roadmap + Sentinel — shown on About */
             <>
             <div className="panel flex flex-col gap-4">
-              <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ LEARNING ROADMAP ]</h2>
+              <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>LEARNING ROADMAP<span className="sm:inline hidden"> ]</span></h2>
 
               <div className="flex flex-col gap-3 text-xs">
                 {([
@@ -698,7 +700,7 @@ export default function App() {
             <>
               {/* Operator Status */}
               <div className="panel flex flex-col gap-2">
-                <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider">[ OPERATOR STATUS ]</h2>
+                <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>OPERATOR STATUS<span className="sm:inline hidden"> ]</span></h2>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs">
                   <span className="text-term-lightgray">ROLE:</span>
                   <span className="text-term-lightgray leading-tight">Systems Engineer @ TCS</span>
@@ -725,7 +727,7 @@ export default function App() {
 
               {/* Live Session Log */}
               <div className="panel flex-grow flex flex-col gap-0 text-xs overflow-hidden">
-                <h2 className="text-term-lightgray mb-3 text-xs font-bold uppercase tracking-wider">[ LIVE SESSION LOG ]</h2>
+                <h2 className="text-term-lightgray mb-3 text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>LIVE SESSION LOG<span className="sm:inline hidden"> ]</span></h2>
                 <div className="flex flex-col gap-0 flex-grow overflow-y-auto max-h-[320px] pr-1">
                   {logEntries.length === 0 ? (
                     <div className="text-term-gray text-[10px] italic">Awaiting session activity...</div>
@@ -759,7 +761,7 @@ export default function App() {
       <footer className={`grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4 mt-4 border-t border-term-border pt-4 transition-opacity duration-500 ${booted ? 'opacity-100' : 'opacity-0'}`}>
         {/* Secure Channel trigger */}
         <div className="panel flex flex-col justify-center gap-2">
-          <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">[ SECURE CHANNEL ]</h2>
+          <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>SECURE CHANNEL<span className="sm:inline hidden"> ]</span></h2>
           <p className="text-term-lightgray text-xs leading-tight">Let's connect and build the future securely.</p>
           <button
             onClick={() => {

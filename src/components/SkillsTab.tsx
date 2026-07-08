@@ -127,7 +127,7 @@ export default function SkillsTab() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div className="lg:col-span-5 flex flex-col gap-4">
         <div className="border border-term-border p-4 rounded bg-term-bg/50">
-          <h2 className="text-term-lightgray mb-3">[ CORE &amp; TOOL SKILLS ]</h2>
+          <h2 className="text-term-lightgray mb-3"><span className="sm:inline hidden">[ </span>CORE &amp; TOOL SKILLS<span className="sm:inline hidden"> ]</span></h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2 text-center text-xs">
             {SKILLS_DATA.map((skill) => {
               const Icon = getIconComponent(skill.icon);
@@ -184,7 +184,7 @@ export default function SkillsTab() {
       <div className="lg:col-span-7 flex flex-col gap-4">
         <div className="border border-term-border p-4 rounded bg-term-bg/50 flex-grow flex flex-col min-h-[350px]">
           <h2 className="text-term-lightgray mb-3 flex items-center justify-between border-b border-term-border pb-2">
-            <span>[ SIMULATED INTERACTIVE SANDBOX ]</span>
+            <span><span className="sm:inline hidden">[ </span>SIMULATED INTERACTIVE SANDBOX<span className="sm:inline hidden"> ]</span></span>
             <span className="text-[10px] text-term-green px-1.5 py-0.5 border border-term-green rounded animate-pulse font-bold">
               ACTIVE NODE
             </span>

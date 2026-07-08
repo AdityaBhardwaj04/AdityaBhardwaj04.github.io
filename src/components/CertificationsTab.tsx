@@ -56,7 +56,7 @@ export default function CertificationsTab() {
       <div className="lg:col-span-5 flex flex-col gap-3">
         <div className="border border-term-border p-4 rounded bg-term-bg/50">
           <h2 className="text-term-lightgray mb-3 flex items-center gap-1.5 text-xs font-bold uppercase">
-            <Award size={14} /> [ CERTIFICATIONS ]
+            <Award size={14} /> <span className="sm:inline hidden">[ </span>CERTIFICATIONS<span className="sm:inline hidden"> ]</span>
           </h2>
           <div className="flex flex-col gap-2">
             {CERTIFICATIONS.map((cert) => (

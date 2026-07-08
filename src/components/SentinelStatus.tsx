@@ -103,7 +103,7 @@ export default function SentinelStatus() {
   return (
     <div className="panel flex flex-col gap-3">
       <h2 className="text-term-lightgray text-xs font-bold uppercase tracking-wider">
-        [ BLACKBOX SENTINEL ]
+        <span className="sm:inline hidden">[ </span>BLACKBOX SENTINEL<span className="sm:inline hidden"> ]</span>
       </h2>
 
       {loading || !sentinel ? (
@@ -113,7 +113,7 @@ export default function SentinelStatus() {
           {/* ── RECENT OPERATIONS (primary) ─────────────────────── */}
           <div className="flex flex-col gap-1.5">
             <span className="text-term-lightgray text-[10px] font-bold uppercase tracking-wider">
-              [ Recent Operations ]
+              <span className="sm:inline hidden">[ </span>Recent Operations<span className="sm:inline hidden"> ]</span>
             </span>
 
             <div className="overflow-y-auto max-h-[160px] flex flex-col pr-0.5">
@@ -159,7 +159,7 @@ export default function SentinelStatus() {
           {/* ── SENTINEL STATUS (supporting) ────────────────────── */}
           <div className="flex flex-col gap-2 pt-2 border-t border-term-border/60">
             <span className="text-term-lightgray text-[10px] font-bold uppercase tracking-wider">
-              [ Sentinel Status ]
+              <span className="sm:inline hidden">[ </span>Sentinel Status<span className="sm:inline hidden"> ]</span>
             </span>
 
             {(sentinel.providers ?? []).map(provider => (

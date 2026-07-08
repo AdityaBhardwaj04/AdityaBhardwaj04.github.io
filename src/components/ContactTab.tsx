@@ -139,7 +139,7 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
         <div className="border border-term-border p-4 rounded bg-term-bg/50 flex-grow flex flex-col gap-3">
           <div className="flex justify-between items-center border-b border-term-border pb-2">
             <h2 className="text-term-green font-bold text-sm uppercase flex items-center gap-1.5 font-mono">
-              <Terminal size={14} /> [ SECURE TRANSMISSION CHANNEL ]
+              <Terminal size={14} /> <span className="sm:inline hidden">[ </span>SECURE TRANSMISSION CHANNEL<span className="sm:inline hidden"> ]</span>
             </h2>
             <span className="text-[10px] text-yellow-500 font-mono">ECC-GCM SECURED</span>
           </div>
@@ -216,7 +216,7 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
         <div className="border border-term-border p-4 rounded bg-term-bg/50 flex-grow flex flex-col gap-3">
           <div className="border-b border-term-border pb-1.5">
             <h3 className="text-term-lightgray font-bold text-xs uppercase flex items-center gap-1.5 font-mono">
-              <ShieldAlert size={14} /> [ TRANSMISSION STATUS ]
+              <ShieldAlert size={14} /> <span className="sm:inline hidden">[ </span>TRANSMISSION STATUS<span className="sm:inline hidden"> ]</span>
             </h3>
           </div>
 

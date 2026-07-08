@@ -54,7 +54,7 @@ export default function AboutTab() {
               : 'border-term-border text-term-lightgray hover:border-term-green hover:text-term-green'
           }`}
         >
-          [ PROFILE ]
+          <span className="sm:inline hidden">[ </span>PROFILE<span className="sm:inline hidden"> ]</span>
         </button>
         <button
           onClick={() => setActiveSubTab('timeline')}
@@ -64,7 +64,7 @@ export default function AboutTab() {
               : 'border-term-border text-term-lightgray hover:border-term-green hover:text-term-green'
           }`}
         >
-          [ TIMELINE ]
+          <span className="sm:inline hidden">[ </span>TIMELINE<span className="sm:inline hidden"> ]</span>
         </button>
         <button
           onClick={() => setActiveSubTab('ethos')}
@@ -74,7 +74,7 @@ export default function AboutTab() {
               : 'border-term-border text-term-lightgray hover:border-term-green hover:text-term-green'
           }`}
         >
-          [ SECURITY ETHOS ]
+          <span className="sm:inline hidden">[ </span>SECURITY ETHOS<span className="sm:inline hidden"> ]</span>
         </button>
       </div>
 
@@ -167,13 +167,13 @@ export default function AboutTab() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 border-t border-term-border pt-4">
               <div className="flex flex-col gap-2">
-                <span className="text-term-green font-bold text-xs">[ PRINCIPLE 01: ZERO TRUST ]</span>
+                <span className="text-term-green font-bold text-xs"><span className="sm:inline hidden">[ </span>PRINCIPLE 01: ZERO TRUST<span className="sm:inline hidden"> ]</span></span>
                 <p className="text-term-lightgray text-xs leading-relaxed">
                   Never assume input parameter sanity or client-side integrity. All boundaries must authenticate, validate, and enforce complete containment natively.
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <span className="text-term-green font-bold text-xs">[ PRINCIPLE 02: KNOWLEDGE SHARING ]</span>
+                <span className="text-term-green font-bold text-xs"><span className="sm:inline hidden">[ </span>PRINCIPLE 02: KNOWLEDGE SHARING<span className="sm:inline hidden"> ]</span></span>
                 <p className="text-term-lightgray text-xs leading-relaxed">
                   Participating in CTF events, hosting walkthrough workshops, and releasing remediation writeups makes the entire web ecosystem safer.
                 </p>

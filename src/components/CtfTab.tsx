@@ -107,7 +107,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
               : 'border-term-border text-term-lightgray hover:border-term-green hover:text-term-green'
           }`}
         >
-          <Crosshair size={12} /> [ INTERACTIVE CHALLENGES ]
+          <Crosshair size={12} /> <span className="sm:inline hidden">[ </span>INTERACTIVE CHALLENGES<span className="sm:inline hidden"> ]</span>
         </button>
         <button
           onClick={() => setCtfView('activity')}
@@ -117,7 +117,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
               : 'border-term-border text-term-lightgray hover:border-term-green hover:text-term-green'
           }`}
         >
-          <BookOpen size={12} /> [ HTB / WRITEUPS ]
+          <BookOpen size={12} /> <span className="sm:inline hidden">[ </span>HTB / WRITEUPS<span className="sm:inline hidden"> ]</span>
         </button>
       </div>
 
@@ -128,7 +128,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
             <div className="border border-term-border p-4 rounded bg-term-bg/50">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-term-lightgray font-bold text-sm uppercase flex items-center gap-1.5">
-                  <Trophy size={14} /> [ ACTIVE CHALLENGES ]
+                  <Trophy size={14} /> <span className="sm:inline hidden">[ </span>ACTIVE CHALLENGES<span className="sm:inline hidden"> ]</span>
                 </h2>
                 <span className="text-[10px] text-term-green font-mono">JEOPARDY STYLE</span>
               </div>
@@ -186,7 +186,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
 
               <div className="border border-term-border rounded bg-term-gray/20 p-3">
                 <span className="text-[10px] text-term-green font-bold uppercase tracking-wider block mb-2 font-mono">
-                  [ INTERACTIVE CHALLENGE PANEL ]
+                  <span className="sm:inline hidden">[ </span>INTERACTIVE CHALLENGE PANEL<span className="sm:inline hidden"> ]</span>
                 </span>
 
                 {activeChall.type === 'sqli' && (
@@ -423,7 +423,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
             ))}
 
             <div className="border border-term-border p-4 rounded bg-term-bg/50 text-xs text-term-lightgray leading-relaxed">
-              <span className="text-term-green font-bold block mb-1.5 uppercase">[ METHODOLOGY ]</span>
+              <span className="text-term-green font-bold block mb-1.5 uppercase"><span className="sm:inline hidden">[ </span>METHODOLOGY<span className="sm:inline hidden"> ]</span></span>
               Every writeup follows a structured approach: reconnaissance, enumeration, exploitation, and post-exploitation. Emphasis on documenting dead ends and pivots — not just the winning path.
             </div>
           </div>
@@ -432,7 +432,7 @@ export default function CtfTab({ challenges, onSolve }: CtfTabProps) {
           <div className="lg:col-span-7 flex flex-col gap-3">
             <div className="border border-term-border p-4 rounded bg-term-bg/50">
               <h2 className="text-term-lightgray font-bold text-sm uppercase flex items-center gap-1.5 mb-3">
-                <BookOpen size={14} /> [ PUBLISHED WRITEUPS ]
+                <BookOpen size={14} /> <span className="sm:inline hidden">[ </span>PUBLISHED WRITEUPS<span className="sm:inline hidden"> ]</span>
               </h2>
               <p className="text-[10px] text-term-lightgray/70 mb-3">
                 Technical walkthroughs published on Medium documenting penetration testing labs and challenge solutions.
