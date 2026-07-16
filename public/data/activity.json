@@ -1,7 +1,27 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-16T13:27:12Z",
+  "generatedAt": "2026-07-16T19:00:18Z",
   "data": [
+    {
+      "id": "evt_20260716_htb_root_own_paperwork",
+      "date": "2026-07-16",
+      "type": "htb",
+      "title": "Root Own — Paperwork",
+      "priority": 100,
+      "source": "Hack The Box",
+      "icon": "terminal",
+      "url": "https://app.hackthebox.com/machines/Paperwork"
+    },
+    {
+      "id": "evt_20260716_htb_user_own_paperwork",
+      "date": "2026-07-16",
+      "type": "htb",
+      "title": "User Own — Paperwork",
+      "priority": 100,
+      "source": "Hack The Box",
+      "icon": "terminal",
+      "url": "https://app.hackthebox.com/machines/Paperwork"
+    },
     {
       "id": "evt_20260708_htb_user_own_spookypass",
       "date": "2026-07-08",
@@ -31,26 +51,6 @@
       "source": "Hack The Box",
       "icon": "terminal",
       "url": "https://app.hackthebox.com/machines/MakeSense"
-    },
-    {
-      "id": "evt_20260702_htb_solved_htb_enigma",
-      "date": "2026-07-02",
-      "type": "htb",
-      "title": "Solved HTB: Enigma",
-      "priority": 100,
-      "source": "Hack The Box",
-      "icon": "terminal",
-      "url": "https://app.hackthebox.com/machines/Enigma"
-    },
-    {
-      "id": "evt_20260628_htb_solved_htb_enigma",
-      "date": "2026-06-28",
-      "type": "htb",
-      "title": "Solved HTB: Enigma",
-      "priority": 100,
-      "source": "Hack The Box",
-      "icon": "terminal",
-      "url": "https://app.hackthebox.com/machines/Enigma"
     }
   ]
 }
