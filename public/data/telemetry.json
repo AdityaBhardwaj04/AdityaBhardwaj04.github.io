@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-25T02:00:47Z",
+  "generatedAt": "2026-07-25T07:54:59Z",
   "data": {
     "github": {
       "repositories": 32,
       "latestRepository": "AdityaBhardwaj04.github.io",
-      "lastCommit": "2026-07-24T19:15:45Z"
+      "lastCommit": "2026-07-25T02:00:49Z"
     },
     "htb": {
       "machinesSolved": 6,
