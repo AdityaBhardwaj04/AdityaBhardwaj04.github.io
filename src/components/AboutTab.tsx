@@ -13,12 +13,12 @@ export default function AboutTab() {
     },
     {
       year: 'Jul 2025 – Sep 2026',
-      role: 'System Engineer – Application Security Testing',
+      role: 'Systems Engineer – Application Security Testing',
       company: 'Tata Consultancy Services (TCS)',
       desc: 'Performed security testing of web applications, APIs and network components, plus vulnerability retesting and remediation validation, using Burp Suite, Nmap, Wireshark and Postman.'
     },
     {
-      year: 'Mar 2025 – May 2025',
+      year: 'Mar 2025 – Apr 2025',
       role: 'Security Testing Intern',
       company: 'Tata Consultancy Services (TCS)',
       desc: 'Assisted in enterprise web application and API security testing workflows. Supported vulnerability discovery using Burp Suite and network scanning tools. Participated in vulnerability validation and remediation verification processes.'
@@ -92,7 +92,7 @@ export default function AboutTab() {
                 <User size={16} /> SECURITY PROFILE SHEET
               </h3>
               <p className="text-term-lightgray leading-relaxed text-sm">
-                MS Cybersecurity student at Northeastern University in Boston, focused on application and cloud security. Previously a System Engineer in application security testing at Tata Consultancy Services, covering web application, API and network security testing, vulnerability retesting and remediation validation with Burp Suite, Nmap, Wireshark and Postman. Active on Hack The Box and TryHackMe, with penetration testing writeups on Medium.
+                MS Cybersecurity student at Northeastern University in Boston, focused on application and cloud security. Previously a Systems Engineer in application security testing at Tata Consultancy Services, covering web application, API and network security testing, vulnerability retesting and remediation validation with Burp Suite, Nmap, Wireshark and Postman. Active on Hack The Box and TryHackMe, with penetration testing writeups on Medium.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-term-border text-xs">
                 <div>
