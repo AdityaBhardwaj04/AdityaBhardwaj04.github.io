@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-31T03:35:22Z",
+  "generatedAt": "2026-10-31T11:30:10Z",
   "data": {
     "github": {
       "repositories": 33,
-      "latestRepository": "homelab",
-      "lastCommit": "2026-10-31T00:36:44Z"
+      "latestRepository": "AdityaBhardwaj04.github.io",
+      "lastCommit": "2026-10-31T05:08:51Z"
     },
     "htb": {
       "machinesSolved": 7,
