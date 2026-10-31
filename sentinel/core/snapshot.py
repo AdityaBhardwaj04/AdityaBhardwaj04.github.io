@@ -30,14 +30,20 @@ def build_snapshot(
     github_result: dict,
     htb_result: dict,
     previous_snapshot: dict,
+    ignore_push_repos: tuple[str, ...] = (),
 ) -> dict:
     """Return a deterministic, content-only snapshot from raw provider results.
 
     ``previous_snapshot`` must be the raw snapshot dict (not the versioned
     wrapper returned by ``pack_snapshot``). Pass ``{}`` on first run.
+
+    ``ignore_push_repos`` lists repositories whose ``pushed_at`` is excluded
+    from the snapshot (case-insensitive). Pass the portfolio's own repository:
+    every Sentinel commit updates its ``pushed_at``, so including it would make
+    each run detect a "change" and commit again, indefinitely.
     """
     github_snap = (
-        _build_github_section(github_result)
+        _build_github_section(github_result, ignore_push_repos)
         if github_result.get("ok")
         else previous_snapshot.get("github", {})
     )
@@ -79,12 +85,13 @@ def pack_snapshot(snapshot: dict) -> dict:
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
 
-def _build_github_section(github_result: dict) -> dict:
+def _build_github_section(github_result: dict, ignore_push_repos: tuple[str, ...] = ()) -> dict:
+    ignored = {name.lower() for name in ignore_push_repos}
     repos = sorted(
         [
             {
                 "name": r["name"],
-                "pushed_at": r.get("pushed_at") or "",
+                "pushed_at": "" if r["name"].lower() in ignored else (r.get("pushed_at") or ""),
                 "latest_release": r.get("latest_release"),
             }
             for r in github_result.get("repos", [])

@@ -167,7 +167,7 @@ export default function SkillsTab() {
           </p>
           <div className="space-y-2 mt-2">
             <span className="text-term-green text-[10px] font-bold tracking-wider uppercase border-b border-term-border pb-1 block">
-              VERIFIED ABILITIES
+              KEY ABILITIES
             </span>
             <ul className="text-xs text-term-lightgray space-y-1.5 list-none pl-1">
               {selectedSkill.details.map((detail, index) => (
@@ -252,10 +252,10 @@ export default function SkillsTab() {
                 <span className="text-xs text-term-green font-bold flex items-center gap-1.5">
                   <Code size={14} /> Python Script Execution Hub
                 </span>
-                <span className="text-[10px] text-term-lightgray">vPython 3.10.4 Engine</span>
+                <span className="text-[10px] text-term-lightgray">Simulated output</span>
               </div>
               <p className="text-xs text-term-lightgray">
-                Execute custom-engineered security scripts built by Aditya to audit network hosts or test defenses.
+                Replays sample output from example security scripts. No code is executed and no network is accessed.
               </p>
 
               <div className="flex gap-4">
@@ -312,7 +312,7 @@ export default function SkillsTab() {
                   </div>
                   {pythonOutput.length === 0 ? (
                     <div className="text-term-gray italic text-center py-6">
-                      Click the execute button to compile and run the Python daemon.
+                      Click execute to replay the sample output.
                     </div>
                   ) : (
                     <div className="space-y-1 overflow-y-auto max-h-[140px]">
@@ -380,7 +380,7 @@ export default function SkillsTab() {
             <div className="flex flex-col gap-2 flex-grow">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-term-green font-bold flex items-center gap-1.5">
-                  <Activity size={14} /> Wireshark Live Traffic Capture
+                  <Activity size={14} /> Wireshark Sample Capture
                 </span>
                 <span className="text-[10px] text-term-lightgray">6 packets captured</span>
               </div>
@@ -454,7 +454,7 @@ export default function SkillsTab() {
                   </div>
                 ) : (
                   <div className="text-term-gray italic text-center py-2">
-                    Click a packet row above to inspect hexadecimal &amp; ASCII plaintext payloads.
+                    Click a packet row above to inspect its sample payload.
                   </div>
                 )}
               </div>
@@ -464,7 +464,7 @@ export default function SkillsTab() {
               <Shield size={48} className="text-term-green mb-2 text-shadow-glow animate-pulse" />
               <h3 className="text-term-green font-bold text-sm">SECURITY HARNESS ACTIVATED</h3>
               <p className="text-term-lightgray text-xs max-w-sm leading-relaxed">
-                Aditya uses advanced proprietary analysis tools to secure clients. Click on other skills (like <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('webexplo')}>Web Exploitation</span>, <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('python')}>Python</span>, <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('burpsuite')}>Burp Suite</span>, or <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('wireshark')}>Wireshark</span>) to operate live interactive sandboxes!
+                No sandbox for this skill yet. Click on other skills (like <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('webexplo')}>Web Exploitation</span>, <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('python')}>Python</span>, <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('burpsuite')}>Burp Suite</span>, or <span className="text-term-green font-bold cursor-pointer underline" onClick={() => setSelectedSkillId('wireshark')}>Wireshark</span>) to operate live interactive sandboxes!
               </p>
             </div>
           )}

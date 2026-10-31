@@ -3,39 +3,47 @@ import { Award, ShieldCheck, CheckCircle2, RefreshCw, Terminal, Search, External
 import { CERTIFICATIONS } from '../data';
 
 export default function CertificationsTab() {
-  const [selectedCertId, setSelectedCertId] = useState<string>('ccna');
+  const [selectedCertId, setSelectedCertId] = useState<string>('ejpt');
   const [lookupCode, setLookupCode] = useState<string>('');
   const [verificationOutput, setVerificationOutput] = useState<string[]>([]);
   const [verifiedUrl, setVerifiedUrl] = useState<string>('');
+  const [verifiedLabel, setVerifiedLabel] = useState<string>('Credly');
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
   const selectedCert = CERTIFICATIONS.find(c => c.id === selectedCertId) || CERTIFICATIONS[0];
+  const selectedLabel = selectedCert.verifyLabel ?? 'Credly';
+  const selectedUrl = selectedCert.verifyUrl ?? selectedCert.badgeUrl;
 
   const handleVerifyCredential = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!lookupCode) return;
+    if (!lookupCode.trim()) return;
 
     setIsVerifying(true);
     setVerifiedUrl('');
     setVerificationOutput([
-      `[i] Querying Credly badge registry...`,
+      `[i] Searching credentials listed on this portfolio...`,
       `[i] Searching for badge ID: "${lookupCode.trim()}"...`,
     ]);
 
     setTimeout(() => {
+      const query = lookupCode.trim().toLowerCase();
       const match = CERTIFICATIONS.find(c =>
-        c.idCode.toLowerCase() === lookupCode.trim().toLowerCase() ||
-        c.badgeUrl.toLowerCase().includes(lookupCode.trim().toLowerCase())
+        c.idCode.toLowerCase() === query ||
+        c.idCode.toLowerCase().startsWith(query) ||
+        (c.verifyUrl ?? '').toLowerCase().includes(query) ||
+        c.badgeUrl.toLowerCase().includes(query)
       );
-      if (match && match.badgeUrl) {
-        setVerifiedUrl(match.badgeUrl);
+      const matchUrl = match ? match.verifyUrl ?? match.badgeUrl : '';
+      if (match && matchUrl) {
+        setVerifiedUrl(matchUrl);
+        setVerifiedLabel(match.verifyLabel ?? 'Credly');
         setVerificationOutput(prev => [
           ...prev,
-          `[+] Badge found in Credly registry.`,
+          `[+] Match found.`,
           `[i] Holder: ADITYA BHARDWAJ`,
           `[i] Credential: ${match.name}`,
           `[i] Issuer: ${match.issuer} (${match.date})`,
-          `[+] STATUS: VERIFIED — Click below to view on Credly.`,
+          `[+] STATUS: LISTED — verify on the issuer's site.`,
         ]);
       } else {
         setVerifiedUrl('');
@@ -43,7 +51,7 @@ export default function CertificationsTab() {
           ...prev,
           `[-] No matching badge found for "${lookupCode.trim()}" in this portfolio.`,
           `[i] This hub only verifies Aditya's credentials listed here.`,
-          `[i] To verify any Credly badge, visit credly.com directly.`,
+          `[i] To verify a credential, use the issuer's site.`,
         ]);
       }
       setIsVerifying(false);
@@ -93,7 +101,12 @@ export default function CertificationsTab() {
             <Terminal size={14} /> CREDENTIAL VERIFICATION
           </h3>
           <p className="text-term-lightgray text-[10px] leading-relaxed mb-3">
-            Enter a badge ID to verify against Credly. Try <code className="text-term-green cursor-pointer" onClick={() => setLookupCode('96a2b560')}>96a2b560</code> (CCNA) or <code className="text-term-green cursor-pointer" onClick={() => setLookupCode('32b50f1b')}>32b50f1b</code> (SC-900).
+            Enter a credential ID to search the credentials listed on this portfolio. Try {CERTIFICATIONS.map((c, i) => (
+              <React.Fragment key={c.id}>
+                {i > 0 && (i === CERTIFICATIONS.length - 1 ? ' or ' : ', ')}
+                <code className="text-term-green cursor-pointer" onClick={() => setLookupCode(c.idCode.slice(0, 8))}>{c.idCode.slice(0, 8)}</code> ({c.issuer})
+              </React.Fragment>
+            ))}.
           </p>
 
           <form onSubmit={handleVerifyCredential} className="flex gap-2">
@@ -136,7 +149,7 @@ export default function CertificationsTab() {
                   rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center gap-1.5 border border-term-green text-term-green hover:bg-term-green hover:text-term-bg transition-colors px-2.5 py-1.5 rounded text-[10px] font-bold"
                 >
-                  View on Credly <ExternalLink size={10} />
+                  View on {verifiedLabel} <ExternalLink size={10} />
                 </a>
               )}
             </div>
@@ -180,20 +193,20 @@ export default function CertificationsTab() {
             </div>
           </div>
 
-          {/* Verify on Credly button */}
+          {/* Verify on issuer site button */}
           <div className="border border-term-border rounded bg-term-gray/25 p-3 flex items-center justify-between mt-auto">
             <div className="text-xs text-term-lightgray">
-              <div className="font-bold text-term-green uppercase">Credly Verified Badge</div>
-              <div className="text-[10px] text-term-gray font-mono">ID: {selectedCert.idCode}</div>
+              <div className="font-bold text-term-green uppercase">{selectedCert.badgeLabel ?? `${selectedLabel} Verified Badge`}</div>
+              <div className="text-[10px] text-term-gray font-mono" title={selectedCert.idCode}>ID: {selectedCert.idCode.length > 8 ? `${selectedCert.idCode.slice(0, 8)}…` : selectedCert.idCode}</div>
             </div>
-            {selectedCert.badgeUrl ? (
+            {selectedUrl ? (
               <a
-                href={selectedCert.badgeUrl}
+                href={selectedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="border border-term-green text-term-green hover:bg-term-green hover:text-term-bg transition-colors px-3 py-2 rounded text-xs font-bold flex items-center gap-1.5"
               >
-                Verify on Credly <ExternalLink size={13} />
+                Verify on {selectedLabel} <ExternalLink size={13} />
               </a>
             ) : (
               <Award size={32} className="text-term-green text-shadow-glow" />

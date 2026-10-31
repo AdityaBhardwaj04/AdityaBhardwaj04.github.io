@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Folder, RefreshCw, Layers, Cpu, Terminal, ExternalLink, Star, ChevronDown } from 'lucide-react';
 import { PROJECTS_DATA } from '../data';
 

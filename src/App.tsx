@@ -6,7 +6,7 @@ import {
   Menu, X
 } from 'lucide-react';
 
-import { CTF_CHALLENGES } from './data';
+import { CTF_CHALLENGES, CERTIFICATIONS, PROJECTS_DATA, PROFILE, PROFILE_LINKS } from './data';
 import { CtfChallenge, TerminalLine } from './types';
 
 import StartupScreen from './components/StartupScreen';
@@ -176,8 +176,8 @@ export default function App() {
             { text: '  certs              - View verified certification traces', type: 'info' },
             { text: '  contact            - Query communication pathways', type: 'info' },
             { text: '  resume             - Download Aditya\'s security resume (PDF)', type: 'info' },
-            { text: '  ping <host>        - Diagnose connection latency', type: 'info' },
-            { text: '  nmap localhost     - Inspect local virtual services and ports', type: 'info' },
+            { text: '  ping [host]        - Measure HTTPS round-trip to this site', type: 'info' },
+            { text: '  nmap               - Show this site\'s public services (recorded scan)', type: 'info' },
             { text: '  clear              - Wipe terminal lines from active cache', type: 'info' }
           ]);
           break;
@@ -185,7 +185,7 @@ export default function App() {
           setTerminalLines(prev => [
             ...prev,
             { text: '> Security enthusiast. CTF player. Lifelong learner.', type: 'output' },
-            { text: 'Role: Cybersecurity Analyst | Offensive Specialist', type: 'output' }
+            { text: 'Role: MS Cybersecurity Student | Application Security | Cloud Security', type: 'output' }
           ]);
           addLogEntry('VIEW', 'Operator profile queried.');
           break;
@@ -205,9 +205,7 @@ export default function App() {
           setTerminalLines(prev => [
             ...prev,
             { text: '[+] Custom Engineered Secure Code Projects:', type: 'success' },
-            { text: '  1. Medicine Inventory Management System (.exe)', type: 'output' },
-            { text: '  2. Materials Data Retrieval App (.streamlit)', type: 'output' },
-            { text: '  3. Facial Recognition Auth System (OpenCV/TF)', type: 'output' }
+            ...PROJECTS_DATA.map((p, i): TerminalLine => ({ text: `  ${i + 1}. ${p.name}`, type: 'output' }))
           ]);
           setActiveTab('projects');
           addLogEntry('NAV', 'Projects workspace opened.');
@@ -216,9 +214,9 @@ export default function App() {
           setTerminalLines(prev => [
             ...prev,
             { text: `[+] Active CTF Scoreboard status:`, type: 'success' },
-            { text: `  - Total flags captured: ${flagsCaptured} / 4`, type: 'output' },
+            { text: `  - Total flags captured: ${flagsCaptured} / ${ctfChallenges.length}`, type: 'output' },
             { text: `  - Accumulative score: ${totalScore} points`, type: 'output' },
-            { text: `  - Rank: ${flagsCaptured === 4 ? 'Root Admin' : flagsCaptured >= 2 ? 'Exploiter' : 'Neophyte'}`, type: 'output' }
+            { text: `  - Rank: ${flagsCaptured === ctfChallenges.length ? 'Root Admin' : flagsCaptured >= ctfChallenges.length / 2 ? 'Exploiter' : 'Neophyte'}`, type: 'output' }
           ]);
           setActiveTab('ctf');
           addLogEntry('NAV', 'CTF & Writeups workspace opened.');
@@ -226,10 +224,11 @@ export default function App() {
         case 'certs':
           setTerminalLines(prev => [
             ...prev,
-            { text: '[+] Accredited Credentials Checked:', type: 'success' },
-            { text: '  - OSCP (Offensive Security Certified Professional)', type: 'output' },
-            { text: '  - CEH (Certified Ethical Hacker)', type: 'output' },
-            { text: '  - Security+ (CompTIA Baseline Ops)', type: 'output' }
+            { text: '[+] Certifications & badges:', type: 'success' },
+            ...CERTIFICATIONS.map((c): TerminalLine => ({
+              text: `  - ${c.name} (${c.issuer})${c.issuer === 'Cisco Networking Academy' ? ' — course badge' : ''}`,
+              type: 'output'
+            }))
           ]);
           setActiveTab('certs');
           addLogEntry('NAV', 'Certifications workspace opened.');
@@ -259,31 +258,48 @@ export default function App() {
           addLogEntry('DOWNLOAD', 'Resume downloaded.');
           break;
         }
-        case 'ping':
-          const host = args[1] || '127.0.0.1';
+        case 'ping': {
+          // Browsers can't send ICMP, so measure a real same-origin HTTPS round-trip instead
+          const origin = window.location.origin;
+          const host = args[1];
           setTerminalLines(prev => [
             ...prev,
-            { text: `PING ${host} (56 data bytes)...`, type: 'info' },
-            { text: `64 bytes from ${host}: icmp_seq=1 ttl=64 time=1.42 ms`, type: 'output' },
-            { text: `64 bytes from ${host}: icmp_seq=2 ttl=64 time=1.19 ms`, type: 'output' },
-            { text: `--- ${host} ping statistics ---`, type: 'info' },
-            { text: '2 packets transmitted, 2 received, 0% packet loss', type: 'output' }
+            ...(host && host !== window.location.hostname
+              ? [{ text: `[i] Browsers can't send ICMP; measuring HTTPS round-trip to ${origin} instead.`, type: 'info' } as TerminalLine]
+              : []),
+            { text: `HTTPS GET ${origin}/data/sentinel.json`, type: 'info' }
           ]);
-          addLogEntry('INFO', `Ping dispatched to ${host}.`);
+          (async () => {
+            const times: number[] = [];
+            for (let seq = 1; seq <= 2; seq++) {
+              const start = performance.now();
+              try {
+                const res = await fetch('/data/sentinel.json', { cache: 'no-store' });
+                await res.arrayBuffer();
+                const ms = performance.now() - start;
+                if (res.ok) {
+                  times.push(ms);
+                  setTerminalLines(prev => [...prev, { text: `seq=${seq} status=${res.status} time=${ms.toFixed(1)} ms`, type: 'output' }]);
+                } else {
+                  setTerminalLines(prev => [...prev, { text: `[-] HTTP ${res.status} from /data/sentinel.json`, type: 'error' }]);
+                }
+              } catch (err) {
+                const message = err instanceof Error ? err.message : String(err);
+                setTerminalLines(prev => [...prev, { text: `[-] Request failed: ${message}`, type: 'error' }]);
+              }
+            }
+            const avg = times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : 'n/a';
+            setTerminalLines(prev => [...prev, { text: `2 requests, ${times.length} succeeded, avg ${avg} ms`, type: 'output' }]);
+          })();
+          addLogEntry('INFO', `Ping dispatched to ${window.location.host}.`);
           break;
+        }
         case 'nmap':
           setTerminalLines(prev => [
             ...prev,
-            { text: 'Starting Nmap 7.92 ( https://nmap.org ) at local time...', type: 'info' },
-            { text: 'Nmap scan report for localhost (127.0.0.1)', type: 'info' },
-            { text: 'PORT     STATE SERVICE', type: 'info' },
-            { text: '22/tcp   open  ssh (OpenSSH 8.9)', type: 'output' },
-            { text: '80/tcp   open  http (Nginx 1.18)', type: 'output' },
-            { text: '443/tcp  open  https (Nginx 1.18 - TLS 1.3)', type: 'output' },
-            { text: '3000/tcp open  react-vite (Development Portfolio)', type: 'output' },
-            { text: 'Nmap done: 1 IP address scanned in 0.88 seconds', type: 'success' }
+            { text: '[i] Recorded scan coming soon. Browsers cannot run port scans.', type: 'info' }
           ]);
-          addLogEntry('INFO', 'Local port scan completed.');
+          addLogEntry('INFO', 'Port scan info requested.');
           break;
         case 'clear':
           setTerminalLines([]);
@@ -356,7 +372,7 @@ export default function App() {
         </motion.div>
         <div className="flex items-center gap-3 text-term-lightgray text-xs">
           <div className="flex sm:flex-row flex-col sm:gap-3 gap-0.5 sm:items-center items-end">
-            <span>&gt;<span className="sm:inline hidden">[</span> 127.0.0.1 <span className="sm:inline hidden">]</span></span>
+            <span>&gt;<span className="sm:inline hidden">[</span> adityabhardwaj04.github.io <span className="sm:inline hidden">]</span></span>
             <span><span className="sm:inline hidden">[ </span>PORT: 443<span className="sm:inline hidden"> ]</span></span>
             <span><span className="sm:inline hidden">[ </span>PROTOCOL: HTTPS<span className="sm:inline hidden"> ]</span></span>
           </div>
@@ -446,13 +462,13 @@ export default function App() {
               <span className="text-term-green font-bold">aditya</span>
 
               <span className="text-term-lightgray">ROLE:</span>
-              <span className="text-term-lightgray leading-tight">Cybersecurity Analyst</span>
+              <span className="text-term-lightgray leading-tight">{PROFILE.role}</span>
 
               <span className="text-term-lightgray">LOCATION:</span>
-              <span className="text-term-lightgray">India</span>
+              <span className="text-term-lightgray">{PROFILE.location}</span>
 
-              <span className="text-term-lightgray">CLEARANCE:</span>
-              <span className="text-term-green font-bold">Level 7</span>
+              <span className="text-term-lightgray">CERTS:</span>
+              <span className="text-term-green font-bold">eJPT · SC-900</span>
 
               <span className="text-term-lightgray">STATUS:</span>
               <div className="flex items-center gap-1.5">
@@ -534,7 +550,7 @@ export default function App() {
               </h1>
               
               <p className="text-term-lightgray text-base md:text-lg mb-4 border-b border-term-border pb-3 inline-block pr-12 leading-relaxed">
-                Cybersecurity Analyst | Ethical Hacker | Problem Solver
+                {PROFILE.headline}
               </p>
 
               {/* Profile Intro Bio */}
@@ -666,7 +682,7 @@ export default function App() {
 
               <div className="flex flex-col gap-3 text-xs">
                 {([
-                  { label: 'eJPT Preparation',   filled: 8 },
+                  { label: PROFILE.learning,     filled: 8 },
                   { label: 'Cloud Security',      filled: 6 },
                   { label: 'Secure SDLC',         filled: 7 },
                   { label: 'Malware Analysis',    filled: 3 },
@@ -688,7 +704,7 @@ export default function App() {
                 <span className="text-term-lightgray text-[10px] font-mono select-none">{'─'.repeat(24)}</span>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-term-lightgray text-[10px] uppercase tracking-wider">Current Milestone</span>
-                  <span className="text-term-green text-xs font-bold">Complete eJPT Certification</span>
+                  <span className="text-term-green text-xs font-bold">{PROFILE.milestone}</span>
                 </div>
               </div>
             </div>
@@ -703,23 +719,23 @@ export default function App() {
                 <h2 className="text-term-lightgray mb-2 text-xs font-bold uppercase tracking-wider"><span className="sm:inline hidden">[ </span>OPERATOR STATUS<span className="sm:inline hidden"> ]</span></h2>
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-xs">
                   <span className="text-term-lightgray">ROLE:</span>
-                  <span className="text-term-lightgray leading-tight">Systems Engineer @ TCS</span>
+                  <span className="text-term-lightgray leading-tight">MS Cybersecurity @ Northeastern</span>
 
                   <span className="text-term-lightgray">FOCUS:</span>
-                  <span className="text-term-lightgray">Application Security</span>
+                  <span className="text-term-lightgray">Application &amp; Cloud Security</span>
 
-                  <span className="text-term-lightgray">SDLC:</span>
-                  <span className="text-term-lightgray">Secure SDLC</span>
+                  <span className="text-term-lightgray">PREV:</span>
+                  <span className="text-term-lightgray">{PROFILE.previousRole}</span>
 
                   <span className="text-term-lightgray">LEARNING:</span>
-                  <span className="text-term-lightgray">eJPT Preparation</span>
+                  <span className="text-term-lightgray">{PROFILE.learning}</span>
 
                   <span className="text-term-lightgray">LATEST:</span>
                   <span className="text-term-lightgray">HTB – Reactor</span>
 
                   <span className="text-term-lightgray">STATUS:</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-term-green font-bold">Open to Opportunities</span>
+                    <span className="text-term-green font-bold">{PROFILE.status}</span>
                     <div className="w-2 h-2 bg-term-green rounded-full animate-pulse shadow-[0_0_5px_#00FF41] flex-shrink-0"></div>
                   </div>
                 </div>
@@ -781,7 +797,7 @@ export default function App() {
             <div><span className="text-term-green font-bold">root@blackbox:~#</span> status</div>
             <div className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">
               <span>Secure Channel</span><span className="text-term-green font-bold">ACTIVE</span>
-              <span>Encryption</span><span className="text-term-green font-bold">ECC-256</span>
+              <span>Transport</span><span className="text-term-green font-bold">HTTPS</span>
               <span>Response Time</span><span className="text-term-green font-bold">&lt; 24 hrs</span>
               <span>Availability</span><span className="text-term-green font-bold">OPEN</span>
             </div>
@@ -790,7 +806,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row gap-5">
             <a
               className="flex items-center gap-2 group cursor-pointer"
-              href="mailto:abd.aditya10@outlook.com"
+              href={`mailto:${PROFILE_LINKS.email}`}
               onClick={() => addLogEntry('LINK', 'Opening email client...')}
             >
               <Mail size={20} className="text-term-green group-hover:text-shadow-glow transition-all" />
@@ -802,7 +818,7 @@ export default function App() {
 
             <a
               className="flex items-center gap-2 group cursor-pointer"
-              href="https://www.linkedin.com/in/abhardwaj28"
+              href={PROFILE_LINKS.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => addLogEntry('LINK', 'Opening LinkedIn profile...')}
@@ -816,7 +832,7 @@ export default function App() {
 
             <a
               className="flex items-center gap-2 group cursor-pointer"
-              href="https://github.com/AdityaBhardwaj04"
+              href={PROFILE_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => addLogEntry('LINK', 'Opening GitHub profile...')}

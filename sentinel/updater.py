@@ -267,7 +267,12 @@ def main() -> None:
         if isinstance(stored_snapshot, dict)
         else {}
     )
-    current_snapshot = build_snapshot(github_result, htb_result, previous_snapshot_content)
+    current_snapshot = build_snapshot(
+        github_result,
+        htb_result,
+        previous_snapshot_content,
+        ignore_push_repos=(f"{cfg.GITHUB_USERNAME}.github.io",),
+    )
     changed = snapshot_changed(previous_state, current_snapshot)
 
     current_state = _build_current_state(github_result, htb_result, prev_sync_times, previous_state)

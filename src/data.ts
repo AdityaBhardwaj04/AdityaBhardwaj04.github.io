@@ -1,4 +1,15 @@
-import { Skill, Project, CtfChallenge, Certification, CtfWriteup, PlatformActivity } from './types';
+import { Skill, Project, CtfChallenge, Certification, CtfWriteup, PlatformActivity, Profile } from './types';
+
+export const PROFILE: Profile = {
+  headline: 'MS Cybersecurity Student | Application Security | Cloud Security',
+  role: 'MS Cybersecurity Student',
+  institution: 'Northeastern University',
+  previousRole: 'System Engineer @ TCS',
+  location: 'Boston, MA',
+  status: 'Seeking Summer 2027 Co-op',
+  learning: 'AI Pentesting',
+  milestone: 'Exploring AI-Assisted Penetration Testing',
+};
 
 export const PROFILE_LINKS = {
   github: 'https://github.com/AdityaBhardwaj04',
@@ -181,6 +192,39 @@ export const PROJECTS_DATA: Project[] = [
     ],
   },
   {
+    id: 'homelab',
+    name: 'Proxmox Cybersecurity Homelab',
+    description: 'Self-hosted Proxmox VE lab with isolated Kali Linux and Debian VMs, per-VM firewalls and verified backups.',
+    longDescription: 'Built and secured a self-hosted Proxmox VE environment with isolated Kali Linux and Debian virtual machines. Implemented network segmentation, per-VM firewall policies, restricted remote administration and SSH jump-host access. Diagnosed and resolved a NAT/conntrack issue, established verified offline VM backups and tested VM recovery.',
+    tags: ['Proxmox VE', 'KVM/QEMU', 'Linux', 'Kali Linux', 'Debian', 'Docker', 'iptables', 'Tailscale', 'OpenSSH', 'OpenSSL'],
+    architecture: [
+      'Proxmox VE 8.4 (KVM/QEMU) on a repurposed laptop: a single standalone node with LVM-Thin storage on one NVMe SSD.',
+      'Kali Linux VM for security testing and a disposable Debian VM used as a Docker host for coursework.',
+      'Internal Linux bridge with NAT over the host\'s Wi-Fi uplink and dnsmasq for guest DHCP/DNS.',
+      'Datacenter and per-VM firewall policies; the Kali VM\'s isolation (internet only, no host, home LAN or other guests) verified from inside the VM.',
+      'Remote administration over Tailscale restricted to an explicit allow-list, key-only SSH, and SSH jump-host access to the Debian VM.'
+    ],
+    repository: 'https://github.com/AdityaBhardwaj04/homelab',
+    highlights: [
+      {
+        title: 'Access & Network Hardening',
+        description: 'Found that the overlay VPN bypassed the Proxmox firewall and that the Kali VM could reach the home LAN. Replaced the allow-all Tailscale policy with an explicit allow-list, isolated the VMs and made SSH key-only.',
+      },
+      {
+        title: 'NAT/Conntrack Troubleshooting',
+        description: 'Enabling per-VM firewalls broke guest internet access. Traced it to a known Proxmox issue with NAT and the firewall bridges and resolved it with a conntrack-zone rule.',
+      },
+      {
+        title: 'Verified Backups & Restore Test',
+        description: 'Backed up both VMs to an offline external SSD and verified the archives, then restored the Kali backup to a temporary, network-disconnected VM and confirmed it booted with its data intact.',
+      },
+      {
+        title: 'Dockerized Apache with HTTPS',
+        description: 'Ran Apache in Docker with a self-signed certificate and mod_ssl, verified over HTTP and HTTPS. A reproducible, non-root Dockerfile rebuild is written but not yet built or tested.',
+      }
+    ],
+  },
+  {
     id: 'medinv',
     name: 'Medicine Inventory Management System',
     description: 'Full-stack pharmacy management system built with Flask, React, and MongoDB.',
@@ -353,14 +397,17 @@ export const CTF_CHALLENGES: CtfChallenge[] = [
 
 export const CERTIFICATIONS: Certification[] = [
   {
-    id: 'ccna',
-    name: 'Cisco Certified Network Associate (CCNA)',
-    issuer: 'Cisco',
-    date: '2024',
-    idCode: '96a2b560',
-    badgeUrl: 'https://www.credly.com/badges/96a2b560-870d-4204-9969-99083dedc7d6/linked_in_profile',
-    description: 'Industry-standard certification validating expertise in network fundamentals, IP connectivity, security fundamentals, and network automation. Covers routing, switching, wireless networking, and network programmability.',
-    skillsVerified: ['Network Fundamentals', 'IP Connectivity & Routing', 'Security Fundamentals', 'Network Access & Switching', 'IP Services (DHCP, NAT, NTP)', 'Automation & Programmability']
+    id: 'ejpt',
+    name: 'Junior Penetration Tester (eJPT)',
+    issuer: 'INE',
+    date: 'Sep 2026',
+    idCode: '67195f20-37f7-48f0-84a7-7ab862d57978',
+    badgeUrl: 'https://www.credential.net/67195f20-37f7-48f0-84a7-7ab862d57978',
+    verifyUrl: 'https://www.credential.net/67195f20-37f7-48f0-84a7-7ab862d57978',
+    verifyLabel: 'Credential.net',
+    badgeLabel: 'INE eJPT Credential',
+    description: 'INE\'s hands-on, browser-based junior penetration testing certification covering the full penetration testing life cycle. Valid until Sep 2029.',
+    skillsVerified: ['Assessment Methodologies', 'Host & Network Auditing', 'Host & Network Penetration Testing', 'Web Application Penetration Testing']
   },
   {
     id: 'sc900',
@@ -371,6 +418,17 @@ export const CERTIFICATIONS: Certification[] = [
     badgeUrl: 'https://www.credly.com/badges/32b50f1b-4725-47d3-abd9-c1003f8d0a81/linked_in_profile',
     description: 'Foundational certification covering Microsoft security, compliance, and identity concepts across cloud-based and related services. Validates understanding of zero trust principles and the Microsoft security ecosystem.',
     skillsVerified: ['Security & Compliance Concepts', 'Identity & Access Management', 'Microsoft Entra ID', 'Microsoft Defender Services', 'Microsoft Purview Compliance', 'Azure Security Capabilities']
+  },
+  {
+    id: 'ccna',
+    name: 'CCNA: Enterprise Networking, Security, and Automation',
+    issuer: 'Cisco Networking Academy',
+    date: '2024',
+    idCode: '96a2b560',
+    badgeUrl: 'https://www.credly.com/badges/96a2b560-870d-4204-9969-99083dedc7d6/linked_in_profile',
+    verifyLabel: 'Credly',
+    description: 'Cisco Networking Academy course badge covering network fundamentals, IP connectivity, security fundamentals, and network automation, including routing, switching, wireless networking, and network programmability.',
+    skillsVerified: ['Network Fundamentals', 'IP Connectivity & Routing', 'Security Fundamentals', 'Network Access & Switching', 'IP Services (DHCP, NAT, NTP)', 'Automation & Programmability']
   },
 ];
 

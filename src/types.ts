@@ -53,8 +53,22 @@ export interface Certification {
   date: string;
   idCode: string;
   badgeUrl: string;
+  verifyUrl?: string;
+  verifyLabel?: string;
+  badgeLabel?: string;
   description: string;
   skillsVerified: string[];
+}
+
+export interface Profile {
+  headline: string;
+  role: string;
+  institution: string;
+  previousRole: string;
+  location: string;
+  status: string;
+  learning: string;
+  milestone: string;
 }
 
 export interface CtfWriteup {
