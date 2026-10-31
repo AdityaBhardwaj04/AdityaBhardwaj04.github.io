@@ -249,3 +249,47 @@ def test_flag_type_mapped_from_htb_type_field():
     activity = {a["id"]: a for a in snap["htb"]["activity"]}
     assert activity[200]["flag_type"] == "user"
     assert activity[201]["flag_type"] == "root"
+
+
+# ── Self-triggering pushes ────────────────────────────────────────────────────
+
+
+def _with_push(github: dict, name: str, pushed_at: str) -> dict:
+    return {
+        **github,
+        "repos": [{**r, "pushed_at": pushed_at} if r["name"] == name else r for r in github["repos"]],
+    }
+
+
+def test_ignored_repo_push_is_unchanged():
+    # Sentinel's own commit updates the portfolio repo's pushed_at; that alone
+    # must not count as a change, or every run would commit again.
+    snap1 = build_snapshot(_GITHUB_ONLINE, _HTB_ONLINE, {}, ignore_push_repos=("repo-b",))
+    pushed = _with_push(_GITHUB_ONLINE, "repo-b", "2026-08-01T00:00:00Z")
+    snap2 = build_snapshot(pushed, _HTB_ONLINE, snap1, ignore_push_repos=("repo-b",))
+    assert not snapshot_changed(_make_state(snap1), snap2)
+
+
+def test_ignored_repo_match_is_case_insensitive():
+    snap1 = build_snapshot(_GITHUB_ONLINE, _HTB_ONLINE, {}, ignore_push_repos=("REPO-B",))
+    pushed = _with_push(_GITHUB_ONLINE, "repo-b", "2026-08-01T00:00:00Z")
+    snap2 = build_snapshot(pushed, _HTB_ONLINE, snap1, ignore_push_repos=("REPO-B",))
+    assert not snapshot_changed(_make_state(snap1), snap2)
+
+
+def test_push_to_other_repo_still_detected_when_one_is_ignored():
+    snap1 = build_snapshot(_GITHUB_ONLINE, _HTB_ONLINE, {}, ignore_push_repos=("repo-b",))
+    pushed = _with_push(_GITHUB_ONLINE, "repo-a", "2026-08-01T00:00:00Z")
+    snap2 = build_snapshot(pushed, _HTB_ONLINE, snap1, ignore_push_repos=("repo-b",))
+    assert snapshot_changed(_make_state(snap1), snap2)
+
+
+def test_ignored_repo_release_still_detected():
+    snap1 = build_snapshot(_GITHUB_ONLINE, _HTB_ONLINE, {}, ignore_push_repos=("repo-b",))
+    released = {
+        **_GITHUB_ONLINE,
+        "repos": [{**r, "latest_release": "v2.0"} if r["name"] == "repo-b" else r
+                  for r in _GITHUB_ONLINE["repos"]],
+    }
+    snap2 = build_snapshot(released, _HTB_ONLINE, snap1, ignore_push_repos=("repo-b",))
+    assert snapshot_changed(_make_state(snap1), snap2)

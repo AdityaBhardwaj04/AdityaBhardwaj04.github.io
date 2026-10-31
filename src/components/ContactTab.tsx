@@ -102,13 +102,13 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
     );
 
-    schedule(0,    () => addLine('command', '> Initializing secure channel...'));
-    schedule(450,  () => addLine('ok',      '✓ ECC-GCM session established'));
-    schedule(750,  () => addLine('command', '> Encrypting payload...'));
+    schedule(0,    () => addLine('command', '> Opening HTTPS connection to EmailJS...'));
+    schedule(450,  () => addLine('ok',      '✓ TLS handled by your browser'));
+    schedule(750,  () => addLine('command', '> Packaging message payload...'));
     schedule(800,  () => addLine('bar',     ''));
-    schedule(1500, () => addLine('command', '> Verifying message integrity...'));
-    schedule(1900, () => addLine('ok',      '✓ Signature verified'));
-    schedule(2150, () => addLine('command', '> Routing secure transmission...'));
+    schedule(1500, () => addLine('command', '> Checking required fields...'));
+    schedule(1900, () => addLine('ok',      '✓ Fields validated'));
+    schedule(2150, () => addLine('command', '> Sending via EmailJS API...'));
     schedule(2200, () => addLine('bar',     ''));
     schedule(2900, () => addLine('pending', '> Awaiting acknowledgement...'));
 
@@ -141,7 +141,7 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
             <h2 className="text-term-green font-bold text-sm uppercase flex items-center gap-1.5 font-mono">
               <Terminal size={14} /> <span className="sm:inline hidden">[ </span>SECURE TRANSMISSION CHANNEL<span className="sm:inline hidden"> ]</span>
             </h2>
-            <span className="text-[10px] text-yellow-500 font-mono">ECC-GCM SECURED</span>
+            <span className="text-[10px] text-yellow-500 font-mono">TLS ENCRYPTED</span>
           </div>
 
           <form onSubmit={handleSendMessage} noValidate className="flex flex-col gap-3 text-xs text-term-lightgray">
@@ -173,7 +173,7 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="font-bold text-[10px] text-term-green">CIPHERTEXT_MESSAGE_PAYLOAD</label>
+              <label className="font-bold text-[10px] text-term-green">MESSAGE_PAYLOAD</label>
               <textarea
                 value={msgText}
                 onChange={(e) => { setMsgText(e.target.value); setErrors(prev => ({ ...prev, message: undefined })); }}
@@ -256,7 +256,7 @@ export default function ContactTab({ onMessageSent }: ContactTabProps) {
             {phase === 'success' && (
               <div className="mt-4 pt-3 border-t border-term-border/40 flex flex-col gap-1 text-[10px]">
                 <span className="text-term-green font-bold">Transmission Complete.</span>
-                <span className="text-term-lightgray">Secure message delivered successfully.</span>
+                <span className="text-term-lightgray">Message delivered via EmailJS.</span>
                 <span className="text-term-lightgray">Operator has been notified.</span>
                 <span className="text-term-lightgray/60 mt-1">Thank you for reaching out.</span>
               </div>
