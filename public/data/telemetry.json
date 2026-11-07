@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-06T04:34:29Z",
+  "generatedAt": "2026-11-07T03:59:45Z",
   "data": {
     "github": {
       "repositories": 33,
       "latestRepository": "AdityaBhardwaj04.github.io",
-      "lastCommit": "2026-11-05T04:36:11Z"
+      "lastCommit": "2026-11-06T04:34:30Z"
     },
     "htb": {
       "machinesSolved": 8,
       "rank": "Script Kiddie",
-      "globalRanking": 1013
+      "globalRanking": 1019
     }
   }
 }
